@@ -138,9 +138,11 @@ Model bundles (`models/*.joblib`) are Python pickles. Loading a pickle can run c
 
 ## Licence
 
-No licence has been chosen yet. Until one is added, the code is all rights reserved. The trained model is derived from CC BY-NC-SA data and should be treated as non-commercial.
+Two licences, depending on the file. The full scope is in [NOTICE.md](NOTICE.md).
 
-Choosing a licence is an open decision.
+- **Software** (source, tests, docs written here): MIT, see [LICENSE](LICENSE).
+- **Data and trained model** (`models/`, and the analysis reports): CC BY-NC-SA 4.0, see [LICENSE-DATA](LICENSE-DATA). The source dataset is non-commercial and share-alike, so the model may not be used commercially.
+- **Third-party material** in `tests/fixtures/` keeps its original terms, which this project does not change.
 
 ## More
 

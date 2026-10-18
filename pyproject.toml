@@ -1,6 +1,7 @@
 [project]
 name = "ipo-radar"
 version = "0.1.0"
+license = {text = "MIT"}
 description = "Live IPO tracker, multi-market listing-gain model and mobile alerts"
 requires-python = ">=3.12"
 dependencies = [

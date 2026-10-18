@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Licences: MIT for the software, CC BY-NC-SA 4.0 for the data and trained model, and
+  third-party material keeps its own terms. Scope in NOTICE.md.
+
 ## 0.1.0 - 2026-10-18
 
 - Initial public release.

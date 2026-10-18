@@ -1,0 +1,230 @@
+{
+  "files": {
+    "indices.parquet": {
+      "bytes": 416439,
+      "sha256": "198c77b997c136382187144a75f31d985b6cdc017e3c7934e30535d7778f3840"
+    },
+    "ipo_radar_src/ipo_radar/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/alerts/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/alerts/daemon.py": {
+      "bytes": 6470,
+      "sha256": "4e63ba150f8b38a041d9d082b5a2bc95c94f6407d7f6bab5a3910ff870fe7d12"
+    },
+    "ipo_radar_src/ipo_radar/alerts/engine.py": {
+      "bytes": 14070,
+      "sha256": "adc44d1e205e3ca91736a19a2ec9629f0d010b3b23e76bdd1bd9daeaafb00d6e"
+    },
+    "ipo_radar_src/ipo_radar/alerts/notify.py": {
+      "bytes": 9096,
+      "sha256": "039568bf4ab0d78fca1a8f04e829a56bca585f69c764c4261d2bf8eefbc3f254"
+    },
+    "ipo_radar_src/ipo_radar/alerts/state.py": {
+      "bytes": 3548,
+      "sha256": "50bcb8f85d408b7d4a63c8e8f912202c3ba3b6d10eed94b64278defeba70a11d"
+    },
+    "ipo_radar_src/ipo_radar/cli/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/cli/analysis.py": {
+      "bytes": 17083,
+      "sha256": "61c0b10a3460c3fe0d4ef5a124b1c44cb0b0f94377620233100ff508c3d7cb72"
+    },
+    "ipo_radar_src/ipo_radar/cli/app.py": {
+      "bytes": 1231,
+      "sha256": "b775fb65cc552dd8e9983b0a2003fc5e5b5f140ac1c399cd1d26fc30eb6aa74b"
+    },
+    "ipo_radar_src/ipo_radar/cli/backend.py": {
+      "bytes": 7150,
+      "sha256": "757ae483fb180d806363aacf0a9d8483a847e368742376a989e3a1eeaaf581a7"
+    },
+    "ipo_radar_src/ipo_radar/cli/commands/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/cli/commands/alerts.py": {
+      "bytes": 12020,
+      "sha256": "be77a16103ea733fb3074576ec7ffeaacde04e9b87447d29216b96084e53379d"
+    },
+    "ipo_radar_src/ipo_radar/cli/commands/market.py": {
+      "bytes": 10369,
+      "sha256": "9ad3f87bae01cee46846a0adea4b4cc25c86751b1b8f958633a7ac366f41fc79"
+    },
+    "ipo_radar_src/ipo_radar/cli/commands/ops.py": {
+      "bytes": 13280,
+      "sha256": "0c696530b5f29ee4b772dcdf1914e8405f519bfd462907118dd774f987d423e8"
+    },
+    "ipo_radar_src/ipo_radar/cli/fmt.py": {
+      "bytes": 3879,
+      "sha256": "c5c3140fe8c2cfbe4439faee1569c0dda2880fd3594b8488abfe7cfb29790678"
+    },
+    "ipo_radar_src/ipo_radar/cli/match.py": {
+      "bytes": 1624,
+      "sha256": "aa151929eb10129823d164996466b3b0b9e8bfe79e90cf5e4a75b198a550a488"
+    },
+    "ipo_radar_src/ipo_radar/cli/render.py": {
+      "bytes": 20769,
+      "sha256": "68c30c59dab30559d9119bffe4d12fd0a2f25fac73d313933b2ffc1d42c06968"
+    },
+    "ipo_radar_src/ipo_radar/cli/service.py": {
+      "bytes": 3414,
+      "sha256": "cfed77d1b83e03c94bfa1dc153b2ae2bf65973c24a830dae8252651dc59e2c5c"
+    },
+    "ipo_radar_src/ipo_radar/cli/ui.py": {
+      "bytes": 2194,
+      "sha256": "495b9b8b2a247106e8fd85fda1975367e3d0ceae6dd9b1a6a2662a0ef068a221"
+    },
+    "ipo_radar_src/ipo_radar/config.py": {
+      "bytes": 1128,
+      "sha256": "6477692885c7c45e163bf342ad49c42f8c5b562cbc92b5578c6aead6fe8c54d8"
+    },
+    "ipo_radar_src/ipo_radar/data/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/data/build.py": {
+      "bytes": 11708,
+      "sha256": "782eaf0136a5724f3be2a687327550cd9a50b4f0aba8c5ea764de7b4ed7226ee"
+    },
+    "ipo_radar_src/ipo_radar/data/context.py": {
+      "bytes": 12520,
+      "sha256": "60c185fe72825d212badc25baf099627fcbc5b2c9d1d86e79526c3c9ca71ecc5"
+    },
+    "ipo_radar_src/ipo_radar/data/global_ipos.py": {
+      "bytes": 32780,
+      "sha256": "7929a4ca1f4f4358b6d67891f7bf7c8b7a7f8eac418f88c388e78e1aaddebca5"
+    },
+    "ipo_radar_src/ipo_radar/data/india.py": {
+      "bytes": 30332,
+      "sha256": "999a98d40f873d650cc125231df158efb983bc7285e12e02ea23ff9dd0304c26"
+    },
+    "ipo_radar_src/ipo_radar/data/india_sources.py": {
+      "bytes": 18207,
+      "sha256": "1c3dd02efa5f53d1982a5958bb34ccf4546c7a858f2023d6ab7522e618caf880"
+    },
+    "ipo_radar_src/ipo_radar/data/indices.py": {
+      "bytes": 13686,
+      "sha256": "455abd54710cc7505dc34506145f342565b0353b1d23178bf41b9d1fc1014f18"
+    },
+    "ipo_radar_src/ipo_radar/errors.py": {
+      "bytes": 135,
+      "sha256": "dddebc3d3d7c600b8c3c2941bd8de316844676cee268d335d5fb1838120db8d4"
+    },
+    "ipo_radar_src/ipo_radar/live/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ipo_radar_src/ipo_radar/live/_http.py": {
+      "bytes": 2912,
+      "sha256": "b88599c32d8482d63c03f1528db0d206a471f9e87ed518aab5494ed64a38bf02"
+    },
+    "ipo_radar_src/ipo_radar/live/_util.py": {
+      "bytes": 1950,
+      "sha256": "0371de9364b32c5dbbd7629e32a983018475e3be88ba4949aa27406f9234df85"
+    },
+    "ipo_radar_src/ipo_radar/live/chittorgarh.py": {
+      "bytes": 11772,
+      "sha256": "9ac3a7d0374bf4eac3097546e9a3eaa50e879ffa8c0ae7f57f4e9eeded05358d"
+    },
+    "ipo_radar_src/ipo_radar/live/gmp.py": {
+      "bytes": 19860,
+      "sha256": "97a10e5ca70f594911e8564a6f76b5fe6e65c29c374ddf8f0ca390d67de42453"
+    },
+    "ipo_radar_src/ipo_radar/live/health.py": {
+      "bytes": 2545,
+      "sha256": "a82e9171d90a79d256930afa9b6640200b6e1a228c270955daa2f21d0ba0701b"
+    },
+    "ipo_radar_src/ipo_radar/live/keys.py": {
+      "bytes": 2999,
+      "sha256": "e3518242409a50aab82b9e3471d9555e3380c53c99898939cfcf535ed3d329a5"
+    },
+    "ipo_radar_src/ipo_radar/live/merge.py": {
+      "bytes": 18210,
+      "sha256": "60f4bccec9ecc8b6f31dfc984a2ae31a245ccbd0430ea6755696ced9c0feebe2"
+    },
+    "ipo_radar_src/ipo_radar/live/nse.py": {
+      "bytes": 11533,
+      "sha256": "5084b3fc75b2bb006c8edb235f442c79d9e011efbf043c0271506390b74933b5"
+    },
+    "ipo_radar_src/ipo_radar/live/snapshots.py": {
+      "bytes": 3857,
+      "sha256": "3fa87e22dd5689043a8e4e67413ef7a0158021aeff2f30a444d5b4ffb05f90bb"
+    },
+    "ipo_radar_src/ipo_radar/model/__init__.py": {
+      "bytes": 424,
+      "sha256": "f53374fe7e9c28496f10b7eeb79b5906ad44afb436b7c9c27a128e47f1603cc4"
+    },
+    "ipo_radar_src/ipo_radar/model/bundle.py": {
+      "bytes": 3817,
+      "sha256": "daaf895bb910d9272292e822b4392ab7dae1636db76b90e24513473f842c54e8"
+    },
+    "ipo_radar_src/ipo_radar/model/design.py": {
+      "bytes": 3489,
+      "sha256": "a92ae457861d5924ea74ffd44eed56c8e60395ff958d94fa55fd31e9dff10602"
+    },
+    "ipo_radar_src/ipo_radar/model/evaluate.py": {
+      "bytes": 21631,
+      "sha256": "69f1dba6f276fa86e2e9a49f6c4c1a6771283673e6d01e904309c2dd5244fe44"
+    },
+    "ipo_radar_src/ipo_radar/model/experiments.py": {
+      "bytes": 7861,
+      "sha256": "2aebdef355ee060ab4e839b564af28470a36e49a9696550a72f09aff66e5a78d"
+    },
+    "ipo_radar_src/ipo_radar/model/features.py": {
+      "bytes": 13555,
+      "sha256": "b0a92d02bdf627ab237aa61576b9971f6b9d1c2b2cfc232c3c07d20fe7bcc323"
+    },
+    "ipo_radar_src/ipo_radar/model/fitting.py": {
+      "bytes": 13696,
+      "sha256": "7e282204ff1c03d385d427545019fc2995a23557939173ea8d3bfa1be29d3538"
+    },
+    "ipo_radar_src/ipo_radar/model/kaggle.py": {
+      "bytes": 8557,
+      "sha256": "911d0749794de6053d13cc657181fed58df0f6c13d71cf4d2be42ef15c1a87ea"
+    },
+    "ipo_radar_src/ipo_radar/model/kaggle_job.py": {
+      "bytes": 28383,
+      "sha256": "3909a333fd91c6430250ace147740213011748f1362feba0dc240a2f99a719c4"
+    },
+    "ipo_radar_src/ipo_radar/model/metrics.py": {
+      "bytes": 6709,
+      "sha256": "baf9d73a6032ba759049cec31932845dd62cd2909075f42d64731cf11bf6db85"
+    },
+    "ipo_radar_src/ipo_radar/model/predict.py": {
+      "bytes": 12102,
+      "sha256": "ed426d165b06b3ddea5f89313501646344b46cbf06e35ac1edb7f1c358c08627"
+    },
+    "ipo_radar_src/ipo_radar/model/train.py": {
+      "bytes": 6389,
+      "sha256": "202e19f8b6ef1321d4e79856a59bb817af05658a2bb1e45574f381e3729c90ae"
+    },
+    "ipo_radar_src/ipo_radar/model/tune.py": {
+      "bytes": 11006,
+      "sha256": "dadd2dd16fd14d4c917581ec6e62662eea72441396946e9763b66098ad933805"
+    },
+    "ipo_radar_src/ipo_radar/model/walkforward.py": {
+      "bytes": 6501,
+      "sha256": "c18a7d73424ccaff5c7e634228928ec0a4356dfcba79661edb47541295d70768"
+    },
+    "ipo_radar_src/ipo_radar/research.py": {
+      "bytes": 53406,
+      "sha256": "70918849cb63965f7b3baf2127566a1c2cc16efedbe0f148a91d3f72fd676630"
+    },
+    "ipo_radar_src/ipo_radar/schema.py": {
+      "bytes": 5385,
+      "sha256": "8aa9b5c2fee4999f1cddbe9479b316096af4a944c144b33613406458f57d9489"
+    },
+    "ipos.parquet": {
+      "bytes": 539147,
+      "sha256": "2b9d0fd03d443ee082a1ad937ed5fb15b9b7a6a3d0cf935544821a114cfca1ab"
+    }
+  },
+  "run_id": "20261015-131100",
+  "source_dir": "ipo_radar_src"
+}

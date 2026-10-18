@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-10-15T07:41:00+00:00",
+  "dataset_ref": "johnthrisokaran/ipo-radar-train-inputs",
+  "kernel_ref": "johnthrisokaran/ipo-radar-train",
+  "profile": {
+    "final_seeds": 1,
+    "n_trials": 20,
+    "quick": true,
+    "search_budget_s": 180,
+    "seed": 2026
+  },
+  "run_id": "20261015-131100",
+  "status": "kernel-error",
+  "uploaded_ipos_sha256": "2b9d0fd03d443ee082a1ad937ed5fb15b9b7a6a3d0cf935544821a114cfca1ab"
+}

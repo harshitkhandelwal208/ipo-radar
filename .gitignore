@@ -1,0 +1,9 @@
+.venv/
+data/raw/
+data/processed/
+models/*.joblib
+__pycache__/
+*.pyc
+.env
+secrets/
+*.egg-info/

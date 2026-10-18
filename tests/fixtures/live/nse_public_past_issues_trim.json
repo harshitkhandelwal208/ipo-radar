@@ -1,0 +1,106 @@
+[
+ {
+  "company": "SMC Global Securities Limited",
+  "htmSym": "smcg04",
+  "ipoEndDate": "09-OCT-2026",
+  "ipoStartDate": "05-OCT-2026",
+  "issuePrice": "-",
+  "linkRemovalDate": "10-OCT-2026",
+  "listingDate": "-",
+  "priceRange": "Rs.1000",
+  "securityType": "DEBT",
+  "symbol": "SMCG04"
+ },
+ {
+  "companyName": "R.K. Fashion Accessories Limited",
+  "ipoEndDate": "07-OCT-2026",
+  "ipoStartDate": "05-OCT-2026",
+  "issuePrice": "82",
+  "listingDate": "12-OCT-2026",
+  "priceRange": "Rs.77 to Rs.82",
+  "securityType": "SME",
+  "symbol": "RKFAL",
+  "company": "R.K. Fashion Accessories Limited"
+ },
+ {
+  "company": "Nityas Gems and Jewellery Limited",
+  "htmSym": "nityas",
+  "ipoEndDate": "05-OCT-2026",
+  "ipoStartDate": "30-SEP-2026",
+  "issuePrice": "    75",
+  "linkRemovalDate": "06-OCT-2026",
+  "listingDate": "08-OCT-2026",
+  "priceRange": "Rs.70 to Rs.75",
+  "securityType": "BE",
+  "symbol": "NITYAS"
+ },
+ {
+  "companyName": "Eventions Limited",
+  "ipoEndDate": "05-OCT-2026",
+  "ipoStartDate": "30-SEP-2026",
+  "issuePrice": "118",
+  "listingDate": "08-OCT-2026",
+  "priceRange": "Rs.112 to Rs.118",
+  "securityType": "SME",
+  "symbol": "EVENTIONS",
+  "company": "Eventions Limited"
+ },
+ {
+  "companyName": "Sri Priyanka Geo Commex Limited-Issue Withdrawn",
+  "ipoEndDate": "29-JUN-2026",
+  "ipoStartDate": "24-JUN-2026",
+  "issuePrice": "-",
+  "listingDate": "-",
+  "priceRange": "Rs.207 to Rs.212",
+  "securityType": "SME",
+  "symbol": "SPGCL",
+  "company": "Sri Priyanka Geo Commex Limited-Issue Withdrawn"
+ },
+ {
+  "company": "SMC Global Securities Limited",
+  "htmSym": "smcg03",
+  "ipoEndDate": "24-OCT-2025",
+  "ipoStartDate": "16-OCT-2025",
+  "issuePrice": "-",
+  "linkRemovalDate": "28-OCT-2025",
+  "listingDate": "-",
+  "priceRange": "Rs.1000",
+  "securityType": "DEBT",
+  "symbol": "SMCG03"
+ },
+ {
+  "company": "SMC Global Securities Limited",
+  "htmSym": "smcg02",
+  "ipoEndDate": "17-APR-2025",
+  "ipoStartDate": "02-APR-2025",
+  "issuePrice": "-",
+  "linkRemovalDate": "22-APR-2025",
+  "listingDate": "-",
+  "priceRange": "Rs.1000",
+  "securityType": "DEBT",
+  "symbol": "SMCG02"
+ },
+ {
+  "company": "SMC Global Securities Limited",
+  "htmSym": "smcg01",
+  "ipoEndDate": "01-AUG-2024",
+  "ipoStartDate": "19-JUL-2024",
+  "issuePrice": "-",
+  "linkRemovalDate": "02-AUG-2024",
+  "listingDate": "-",
+  "priceRange": "Rs.1000",
+  "securityType": "DEBT",
+  "symbol": "SMCG01"
+ },
+ {
+  "companyName": "Papadmalji Agro Foods Limited",
+  "ipoEndDate": "01-OCT-2026",
+  "ipoStartDate": "29-SEP-2026",
+  "issuePrice": "72",
+  "listingDate": "07-OCT-2026",
+  "priceRange": "Rs.69 to Rs.72",
+  "securityType": "SME",
+  "symbol": "PAPADMALJI",
+  "company": "Papadmalji Agro Foods Limited"
+ }
+]

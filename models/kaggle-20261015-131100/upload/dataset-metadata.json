@@ -1,0 +1,11 @@
+{
+  "id": "johnthrisokaran/ipo-radar-train-inputs",
+  "title": "IPO radar train inputs",
+  "subtitle": "Private training inputs for ipo-radar (one kernel run)",
+  "description": "IPO table, index closes, the ipo_radar package as plain files and a manifest with checksums. Third-party data: see the sources in the project. Private.",
+  "licenses": [
+    {
+      "name": "other"
+    }
+  ]
+}

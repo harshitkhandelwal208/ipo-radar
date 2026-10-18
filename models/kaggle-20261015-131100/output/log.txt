@@ -1,0 +1,66 @@
+2026-10-15 07:40:41,787 dataset tree under /kaggle/input: 56 files
+2026-10-15 07:40:41,787       416439  datasets/johnthrisokaran/ipo-radar-train-inputs/indices.parquet
+2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/__init__.py
+2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/__init__.py
+2026-10-15 07:40:41,787         6470  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/daemon.py
+2026-10-15 07:40:41,787        14070  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/engine.py
+2026-10-15 07:40:41,787         9096  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/notify.py
+2026-10-15 07:40:41,787         3548  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/state.py
+2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/__init__.py
+2026-10-15 07:40:41,787        17083  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/analysis.py
+2026-10-15 07:40:41,788         1231  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/app.py
+2026-10-15 07:40:41,788         6939  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/backend.py
+2026-10-15 07:40:41,788            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/__init__.py
+2026-10-15 07:40:41,788        12020  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/alerts.py
+2026-10-15 07:40:41,788        10369  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/market.py
+2026-10-15 07:40:41,788        13280  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/ops.py
+2026-10-15 07:40:41,788         3879  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/fmt.py
+2026-10-15 07:40:41,788         1624  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/match.py
+2026-10-15 07:40:41,788        20769  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/render.py
+2026-10-15 07:40:41,788         3414  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/service.py
+2026-10-15 07:40:41,788         2194  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/ui.py
+2026-10-15 07:40:41,788         1128  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/config.py
+2026-10-15 07:40:41,788            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/__init__.py
+2026-10-15 07:40:41,788        11708  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/build.py
+2026-10-15 07:40:41,789        12520  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/context.py
+2026-10-15 07:40:41,789        32780  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/global_ipos.py
+2026-10-15 07:40:41,789        30332  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/india.py
+2026-10-15 07:40:41,789        18207  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/india_sources.py
+2026-10-15 07:40:41,789        13686  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/indices.py
+2026-10-15 07:40:41,789          135  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/errors.py
+2026-10-15 07:40:41,789            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/__init__.py
+2026-10-15 07:40:41,789         2912  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/_http.py
+2026-10-15 07:40:41,789         1950  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/_util.py
+2026-10-15 07:40:41,789        11772  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/chittorgarh.py
+2026-10-15 07:40:41,789        19860  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/gmp.py
+2026-10-15 07:40:41,789         2545  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/health.py
+2026-10-15 07:40:41,789         2999  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/keys.py
+2026-10-15 07:40:41,789        18210  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/merge.py
+2026-10-15 07:40:41,789        11533  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/nse.py
+2026-10-15 07:40:41,789         3857  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/snapshots.py
+2026-10-15 07:40:41,790          424  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/__init__.py
+2026-10-15 07:40:41,790         3817  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/bundle.py
+2026-10-15 07:40:41,790         3489  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/design.py
+2026-10-15 07:40:41,790        21631  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/evaluate.py
+2026-10-15 07:40:41,790         7861  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/experiments.py
+2026-10-15 07:40:41,790        13555  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/features.py
+2026-10-15 07:40:41,790        13696  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/fitting.py
+2026-10-15 07:40:41,790         8366  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/kaggle.py
+2026-10-15 07:40:41,790        26710  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/kaggle_job.py
+2026-10-15 07:40:41,790         6709  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/metrics.py
+2026-10-15 07:40:41,790        12102  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/predict.py
+2026-10-15 07:40:41,790         6389  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/train.py
+2026-10-15 07:40:41,790        11006  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/tune.py
+2026-10-15 07:40:41,790         6501  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/walkforward.py
+2026-10-15 07:40:41,790         5385  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/schema.py
+2026-10-15 07:40:41,790       539147  datasets/johnthrisokaran/ipo-radar-train-inputs/ipos.parquet
+2026-10-15 07:40:41,790          501  datasets/johnthrisokaran/ipo-radar-train-inputs/manifest.json
+2026-10-15 07:40:41,839 kernel failed: dataset is run 20261015-130039 but this kernel is run 20261015-131100: Kaggle mounted an older dataset version; push the kernel again
+2026-10-15 07:40:41,840 Traceback (most recent call last):
+  File "/kaggle/src/script.py", line 111, in main
+    manifest = check_inputs(base)
+  File "/kaggle/src/script.py", line 61, in check_inputs
+    raise RuntimeError(f"dataset is run {manifest.get('run_id')} but this kernel is run {RUN_ID}: "
+                       "Kaggle mounted an older dataset version; push the kernel again")
+RuntimeError: dataset is run 20261015-130039 but this kernel is run 20261015-131100: Kaggle mounted an older dataset version; push the kernel again
+

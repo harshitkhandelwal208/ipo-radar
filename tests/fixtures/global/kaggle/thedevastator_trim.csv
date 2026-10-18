@@ -1,0 +1,5 @@
+Company Name,Symbol,Market,Price,Shares,Offer Amount,Date Priced,sector,firstday_open,firstday_adjclose
+GENERAC HOLDINGS INC.,GNRC,New York Stock Exchange,13.0,18750000.0,243750000.0,2010-02-11,Industrials,13.0,8.460628509521484
+GENERAL MOTORS CO,GM,New York Stock Exchange,33.0,478000000.0,15774000000.0,2010-11-18,Consumer Cyclical,35.0,27.31682586669922
+FACEBOOK INC,FB,Nasdaq Global Market,38.0,421233615.0,16006877370.0,2012-05-18,Technology,42.04999923706055,38.22999954223633
+Test Acquisition Corp,TSTA,NASDAQ,10.0,10000000.0,100000000.0,2015-06-01,Financials,10.1,10.05

@@ -1,0 +1,83 @@
+[{"stream_name":"stdout","time":2.581139318,"data":"2026-10-15 07:40:41,787 dataset tree under /kaggle/input: 56 files\n"}
+,{"stream_name":"stdout","time":2.581332426,"data":"2026-10-15 07:40:41,787       416439  datasets/johnthrisokaran/ipo-radar-train-inputs/indices.parquet\n"}
+,{"stream_name":"stdout","time":2.581346233,"data":"2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/__init__.py\n"}
+,{"stream_name":"stdout","time":2.581351608,"data":"2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/__init__.py\n"}
+,{"stream_name":"stdout","time":2.581365125,"data":"2026-10-15 07:40:41,787         6470  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/daemon.py\n"}
+,{"stream_name":"stdout","time":2.581377389,"data":"2026-10-15 07:40:41,787        14070  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/engine.py\n"}
+,{"stream_name":"stdout","time":2.581531941,"data":"2026-10-15 07:40:41,787         9096  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/notify.py\n"}
+,{"stream_name":"stdout","time":2.581541937,"data":"2026-10-15 07:40:41,787         3548  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/alerts/state.py\n"}
+,{"stream_name":"stdout","time":2.581593287,"data":"2026-10-15 07:40:41,787            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/__init__.py\n"}
+,{"stream_name":"stdout","time":2.5816493879999998,"data":"2026-10-15 07:40:41,787        17083  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/analysis.py\n"}
+,{"stream_name":"stdout","time":2.5818177049999997,"data":"2026-10-15 07:40:41,788         1231  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/app.py\n"}
+,{"stream_name":"stdout","time":2.581861624,"data":"2026-10-15 07:40:41,788         6939  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/backend.py\n"}
+,{"stream_name":"stdout","time":2.581934267,"data":"2026-10-15 07:40:41,788            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/__init__.py\n"}
+,{"stream_name":"stdout","time":2.581993735,"data":"2026-10-15 07:40:41,788        12020  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/alerts.py\n"}
+,{"stream_name":"stdout","time":2.582041297,"data":"2026-10-15 07:40:41,788        10369  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/market.py\n"}
+,{"stream_name":"stdout","time":2.582169458,"data":"2026-10-15 07:40:41,788        13280  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/commands/ops.py\n"}
+,{"stream_name":"stdout","time":2.5821854010000003,"data":"2026-10-15 07:40:41,788         3879  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/fmt.py\n"}
+,{"stream_name":"stdout","time":2.582255307,"data":"2026-10-15 07:40:41,788         1624  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/match.py\n"}
+,{"stream_name":"stdout","time":2.582325557,"data":"2026-10-15 07:40:41,788        20769  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/render.py\n"}
+,{"stream_name":"stdout","time":2.582432551,"data":"2026-10-15 07:40:41,788         3414  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/service.py\n"}
+,{"stream_name":"stdout","time":2.582512165,"data":"2026-10-15 07:40:41,788         2194  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/cli/ui.py\n"}
+,{"stream_name":"stdout","time":2.5825200969999997,"data":"2026-10-15 07:40:41,788         1128  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/config.py\n"}
+,{"stream_name":"stdout","time":2.5825793900000003,"data":"2026-10-15 07:40:41,788            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/__init__.py\n"}
+,{"stream_name":"stdout","time":2.582623248,"data":"2026-10-15 07:40:41,788        11708  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/build.py\n"}
+,{"stream_name":"stdout","time":2.582747555,"data":"2026-10-15 07:40:41,789        12520  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/context.py\n"}
+,{"stream_name":"stdout","time":2.582795644,"data":"2026-10-15 07:40:41,789        32780  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/global_ipos.py\n"}
+,{"stream_name":"stdout","time":2.582863305,"data":"2026-10-15 07:40:41,789        30332  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/india.py\n"}
+,{"stream_name":"stdout","time":2.582912169,"data":"2026-10-15 07:40:41,789        18207  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/india_sources.py\n"}
+,{"stream_name":"stdout","time":2.582973968,"data":"2026-10-15 07:40:41,789        13686  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/data/indices.py\n"}
+,{"stream_name":"stdout","time":2.58302541,"data":"2026-10-15 07:40:41,789          135  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/errors.py\n"}
+,{"stream_name":"stdout","time":2.583110127,"data":"2026-10-15 07:40:41,789            0  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/__init__.py\n"}
+,{"stream_name":"stdout","time":2.583150207,"data":"2026-10-15 07:40:41,789         2912  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/_http.py\n"}
+,{"stream_name":"stdout","time":2.583231225,"data":"2026-10-15 07:40:41,789         1950  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/_util.py\n"}
+,{"stream_name":"stdout","time":2.583287313,"data":"2026-10-15 07:40:41,789        11772  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/chittorgarh.py\n"}
+,{"stream_name":"stdout","time":2.583351425,"data":"2026-10-15 07:40:41,789        19860  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/gmp.py\n"}
+,{"stream_name":"stdout","time":2.583416369,"data":"2026-10-15 07:40:41,789         2545  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/health.py\n"}
+,{"stream_name":"stdout","time":2.583466314,"data":"2026-10-15 07:40:41,789         2999  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/keys.py\n"}
+,{"stream_name":"stdout","time":2.5835446749999997,"data":"2026-10-15 07:40:41,789        18210  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/merge.py\n"}
+,{"stream_name":"stdout","time":2.583606647,"data":"2026-10-15 07:40:41,789        11533  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/nse.py\n"}
+,{"stream_name":"stdout","time":2.58468438,"data":"2026-10-15 07:40:41,789         3857  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/live/snapshots.py\n"}
+,{"stream_name":"stdout","time":2.584709288,"data":"2026-10-15 07:40:41,790          424  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/__init__.py\n"}
+,{"stream_name":"stdout","time":2.584714952,"data":"2026-10-15 07:40:41,790         3817  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/bundle.py\n"}
+,{"stream_name":"stdout","time":2.584719359,"data":"2026-10-15 07:40:41,790         3489  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/design.py\n"}
+,{"stream_name":"stdout","time":2.5847344359999997,"data":"2026-10-15 07:40:41,790        21631  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/evaluate.py\n"}
+,{"stream_name":"stdout","time":2.584738825,"data":"2026-10-15 07:40:41,790         7861  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/experiments.py\n"}
+,{"stream_name":"stdout","time":2.5847430190000003,"data":"2026-10-15 07:40:41,790        13555  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/features.py\n"}
+,{"stream_name":"stdout","time":2.58475003,"data":"2026-10-15 07:40:41,790        13696  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/fitting.py\n"}
+,{"stream_name":"stdout","time":2.58475402,"data":"2026-10-15 07:40:41,790         8366  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/kaggle.py\n"}
+,{"stream_name":"stdout","time":2.5847582190000002,"data":"2026-10-15 07:40:41,790        26710  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/kaggle_job.py\n"}
+,{"stream_name":"stdout","time":2.584762675,"data":"2026-10-15 07:40:41,790         6709  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/metrics.py\n"}
+,{"stream_name":"stdout","time":2.584766701,"data":"2026-10-15 07:40:41,790        12102  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/predict.py\n"}
+,{"stream_name":"stdout","time":2.584770439,"data":"2026-10-15 07:40:41,790         6389  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/train.py\n"}
+,{"stream_name":"stdout","time":2.5847749540000002,"data":"2026-10-15 07:40:41,790        11006  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/tune.py\n"}
+,{"stream_name":"stdout","time":2.584777677,"data":"2026-10-15 07:40:41,790         6501  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/model/walkforward.py\n"}
+,{"stream_name":"stdout","time":2.58478035,"data":"2026-10-15 07:40:41,790         5385  datasets/johnthrisokaran/ipo-radar-train-inputs/ipo_radar_src/ipo_radar/schema.py\n"}
+,{"stream_name":"stdout","time":2.584784164,"data":"2026-10-15 07:40:41,790       539147  datasets/johnthrisokaran/ipo-radar-train-inputs/ipos.parquet\n"}
+,{"stream_name":"stdout","time":2.5847867,"data":"2026-10-15 07:40:41,790          501  datasets/johnthrisokaran/ipo-radar-train-inputs/manifest.json\n"}
+,{"stream_name":"stdout","time":2.633501513,"data":"2026-10-15 07:40:41,839 kernel failed: dataset is run 20261015-130039 but this kernel is run 20261015-131100: Kaggle mounted an older dataset version; push the kernel again\n"}
+,{"stream_name":"stdout","time":2.634554182,"data":"2026-10-15 07:40:41,840 Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":2.634578335,"data":"  File \"/kaggle/src/script.py\", line 111, in main\n"}
+,{"stream_name":"stdout","time":2.634583651,"data":"    manifest = check_inputs(base)\n"}
+,{"stream_name":"stdout","time":2.634588076,"data":"  File \"/kaggle/src/script.py\", line 61, in check_inputs\n"}
+,{"stream_name":"stdout","time":2.634592455,"data":"    raise RuntimeError(f\"dataset is run {manifest.get('run_id')} but this kernel is run {RUN_ID}: \"\n"}
+,{"stream_name":"stdout","time":2.63459681,"data":"                       \"Kaggle mounted an older dataset version; push the kernel again\")\n"}
+,{"stream_name":"stdout","time":2.634601042,"data":"RuntimeError: dataset is run 20261015-130039 but this kernel is run 20261015-131100: Kaggle mounted an older dataset version; push the kernel again\n"}
+,{"stream_name":"stdout","time":2.634635401,"data":"\n"}
+,{"stream_name":"stderr","time":2.635189399,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":2.6357050490000002,"data":"  File \"/kaggle/src/script.py\", line 157, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":2.635724466,"data":"    main()\n"}
+,{"stream_name":"stderr","time":2.635729156,"data":"    ~~~~^^\n"}
+,{"stream_name":"stderr","time":2.635733013,"data":"  File \"/kaggle/src/script.py\", line 111, in main\n"}
+,{"stream_name":"stderr","time":2.635737404,"data":"    manifest = check_inputs(base)\n"}
+,{"stream_name":"stderr","time":2.635741351,"data":"  File \"/kaggle/src/script.py\", line 61, in check_inputs\n"}
+,{"stream_name":"stderr","time":2.635745315,"data":"    raise RuntimeError(f\"dataset is run {manifest.get('run_id')} but this kernel is run {RUN_ID}: \"\n"}
+,{"stream_name":"stderr","time":2.635750415,"data":"                       \"Kaggle mounted an older dataset version; push the kernel again\")\n"}
+,{"stream_name":"stderr","time":2.635753436,"data":"RuntimeError: dataset is run 20261015-130039 but this kernel is run 20261015-131100: Kaggle mounted an older dataset version; push the kernel again\n"}
+,{"stream_name":"stderr","time":5.50786715,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":5.507903507,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":5.887915517,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":5.887950098,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7.534005863,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":8.825467829,"data":"[NbConvertApp] Writing 306703 bytes to __results__.html\n"}
+]

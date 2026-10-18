@@ -1,0 +1,521 @@
+{
+  "version": "20261015-07cf78bd",
+  "trained_at": "2026-10-15T07:00:31+00:00",
+  "n_rows": 4933,
+  "quick": false,
+  "params": {},
+  "seeds": [
+    7
+  ],
+  "stages": {
+    "pre_open": {
+      "trained": true,
+      "n_open": 3958,
+      "n_close": 4021,
+      "n_by_market": {
+        "HK": 323,
+        "IN_MAIN": 658,
+        "IN_SME": 1746,
+        "US": 1231
+      },
+      "calibrated": true,
+      "conformal": {
+        "ALL": 17.647015099717244,
+        "IN_MAIN": 1.126449442029875,
+        "IN_SME": 19.46404765266078
+      },
+      "conformal_residuals": {
+        "ALL": 878,
+        "IN_MAIN": 290,
+        "IN_SME": 571
+      },
+      "gmp_linear": false,
+      "n_features": 26,
+      "core_by_market": {
+        "HK": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "IN_MAIN": [
+          "log_price_ref",
+          "log_issue_size_m",
+          "lot_size",
+          "fresh_issue_pct",
+          "idx_ret_20d"
+        ],
+        "IN_SME": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "US": [
+          "log_issue_size_m"
+        ]
+      }
+    },
+    "day1": {
+      "trained": true,
+      "n_open": 3958,
+      "n_close": 4021,
+      "n_by_market": {
+        "HK": 323,
+        "IN_MAIN": 658,
+        "IN_SME": 1746,
+        "US": 1231
+      },
+      "calibrated": true,
+      "conformal": {
+        "ALL": 18.239950102836318,
+        "IN_MAIN": 2.0743524427563997,
+        "IN_SME": 19.224512710273117
+      },
+      "conformal_residuals": {
+        "ALL": 878,
+        "IN_MAIN": 290,
+        "IN_SME": 571
+      },
+      "gmp_linear": false,
+      "n_features": 32,
+      "core_by_market": {
+        "HK": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "IN_MAIN": [
+          "log_price_ref",
+          "log_issue_size_m",
+          "lot_size",
+          "fresh_issue_pct",
+          "idx_ret_20d"
+        ],
+        "IN_SME": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "US": [
+          "log_issue_size_m"
+        ]
+      }
+    },
+    "day2": {
+      "trained": true,
+      "n_open": 3958,
+      "n_close": 4021,
+      "n_by_market": {
+        "HK": 323,
+        "IN_MAIN": 658,
+        "IN_SME": 1746,
+        "US": 1231
+      },
+      "calibrated": true,
+      "conformal": {
+        "ALL": 18.351797911041356,
+        "IN_MAIN": 2.225085038887613,
+        "IN_SME": 19.022447724949448
+      },
+      "conformal_residuals": {
+        "ALL": 878,
+        "IN_MAIN": 290,
+        "IN_SME": 571
+      },
+      "gmp_linear": false,
+      "n_features": 38,
+      "core_by_market": {
+        "HK": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "IN_MAIN": [
+          "log_price_ref",
+          "log_issue_size_m",
+          "lot_size",
+          "fresh_issue_pct",
+          "idx_ret_20d"
+        ],
+        "IN_SME": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "US": [
+          "log_issue_size_m"
+        ]
+      }
+    },
+    "close": {
+      "trained": true,
+      "n_open": 3958,
+      "n_close": 4021,
+      "n_by_market": {
+        "HK": 323,
+        "IN_MAIN": 658,
+        "IN_SME": 1746,
+        "US": 1231
+      },
+      "calibrated": true,
+      "conformal": {
+        "ALL": 17.160611932150097,
+        "IN_MAIN": 3.8980925081138027,
+        "IN_SME": 19.15156300368063
+      },
+      "conformal_residuals": {
+        "ALL": 878,
+        "IN_MAIN": 290,
+        "IN_SME": 571
+      },
+      "gmp_linear": false,
+      "n_features": 50,
+      "core_by_market": {
+        "HK": [
+          "log_issue_size_m",
+          "lot_size",
+          "log_sub_retail"
+        ],
+        "IN_MAIN": [
+          "log_price_ref",
+          "log_issue_size_m",
+          "lot_size",
+          "fresh_issue_pct",
+          "idx_ret_20d",
+          "log_sub_total",
+          "log_sub_qib",
+          "log_sub_retail"
+        ],
+        "IN_SME": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "US": [
+          "log_issue_size_m"
+        ]
+      }
+    },
+    "pre_listing": {
+      "trained": true,
+      "n_open": 3958,
+      "n_close": 4021,
+      "n_by_market": {
+        "HK": 323,
+        "IN_MAIN": 658,
+        "IN_SME": 1746,
+        "US": 1231
+      },
+      "calibrated": true,
+      "conformal": {
+        "ALL": 18.111417981264168,
+        "IN_MAIN": 4.3756526375603535,
+        "IN_SME": 20.248980186474157
+      },
+      "conformal_residuals": {
+        "ALL": 878,
+        "IN_MAIN": 290,
+        "IN_SME": 571
+      },
+      "gmp_linear": true,
+      "n_features": 52,
+      "core_by_market": {
+        "HK": [
+          "log_issue_size_m",
+          "lot_size",
+          "log_sub_retail"
+        ],
+        "IN_MAIN": [
+          "log_price_ref",
+          "log_issue_size_m",
+          "lot_size",
+          "fresh_issue_pct",
+          "idx_ret_20d",
+          "log_sub_total",
+          "log_sub_qib",
+          "log_sub_retail"
+        ],
+        "IN_SME": [
+          "log_issue_size_m",
+          "lot_size"
+        ],
+        "US": [
+          "log_issue_size_m"
+        ]
+      }
+    }
+  },
+  "design": {
+    "conformal": true,
+    "monotone": true,
+    "gmp_model": "blend",
+    "routing": {
+      "IN_MAIN": "IN_MAIN",
+      "IN_SME": "india",
+      "GLOBAL": "pooled"
+    }
+  },
+  "gmp_rows": {
+    "IN_MAIN": {
+      "2020": 6,
+      "2021": 40,
+      "2022": 24,
+      "2023": 57
+    },
+    "IN_SME": {
+      "2021": 2,
+      "2022": 70,
+      "2023": 177,
+      "2024": 3
+    },
+    "GLOBAL": {}
+  },
+  "skill": {
+    "pre_open": {
+      "IN_MAIN": {
+        "n": 171,
+        "p50_beats_median": false,
+        "mae_diff": [
+          -0.6085615779318083,
+          -1.6640022415990534,
+          0.5035100331402825
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          0.005408611766399054,
+          -0.006812447851526699,
+          0.020677447384184474
+        ],
+        "auc": 0.5033022533022533
+      },
+      "IN_SME": {
+        "n": 653,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -0.6152180947714998,
+          -0.8633693131854661,
+          -0.36399795681050906
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.0015664390926604908,
+          -0.005534507275153325,
+          0.002655883862958408
+        ],
+        "auc": 0.5776548672566372
+      },
+      "GLOBAL": {
+        "n": 142,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -1.5502836579916761,
+          -2.2607169554181428,
+          -0.7854402643512143
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.01815234860864628,
+          -0.038061079779730465,
+          0.0026405456322532526
+        ],
+        "auc": 0.49350649350649356
+      }
+    },
+    "day1": {
+      "IN_MAIN": {
+        "n": 171,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -3.184878197930953,
+          -5.202824665045655,
+          -1.091048282260229
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          0.006280942371912329,
+          -0.01016364038836284,
+          0.022415871588113766
+        ],
+        "auc": 0.626942501942502
+      },
+      "IN_SME": {
+        "n": 653,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -2.72842212575246,
+          -3.9097830231836115,
+          -1.6067567608709856
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          0.0007121375883575945,
+          -0.004146586149327113,
+          0.005899151709391948
+        ],
+        "auc": 0.5998525073746312
+      },
+      "GLOBAL": {
+        "n": 142,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -1.6602832694533145,
+          -2.3657179225066423,
+          -0.9033912508490781
+        ],
+        "brier_beats_base": true,
+        "brier_diff": [
+          -0.020975465611795866,
+          -0.040115366571430375,
+          -0.0024566067994019544
+        ],
+        "auc": 0.5048951048951049
+      }
+    },
+    "day2": {
+      "IN_MAIN": {
+        "n": 171,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -3.2966785972989725,
+          -5.5656654169514965,
+          -1.2392263611214642
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          0.01586015472861707,
+          -0.009396881919272279,
+          0.04096605928805015
+        ],
+        "auc": 0.5709013209013208
+      },
+      "IN_SME": {
+        "n": 653,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -3.137553683255737,
+          -4.35103606465653,
+          -1.9035003633796805
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          0.0014965014872515437,
+          -0.003957153280016788,
+          0.0069196012109763675
+        ],
+        "auc": 0.6088905276958374
+      },
+      "GLOBAL": {
+        "n": 142,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -1.6586725000100626,
+          -2.384572601651233,
+          -0.9595610021307912
+        ],
+        "brier_beats_base": true,
+        "brier_diff": [
+          -0.017181818251399392,
+          -0.03171892767031246,
+          -0.002364449207158375
+        ],
+        "auc": 0.4806193806193807
+      }
+    },
+    "close": {
+      "IN_MAIN": {
+        "n": 171,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -5.499070161608873,
+          -8.091829778090391,
+          -2.9474572012138918
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.016072986921648352,
+          -0.03697181494585235,
+          0.00597642620307272
+        ],
+        "auc": 0.70998445998446
+      },
+      "IN_SME": {
+        "n": 653,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -4.243257357928237,
+          -5.597021095637779,
+          -2.889414620221998
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.0014115409356111374,
+          -0.007234242740341183,
+          0.004463946304924563
+        ],
+        "auc": 0.6041297935103245
+      },
+      "GLOBAL": {
+        "n": 142,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -1.9828236239858938,
+          -2.644296677893816,
+          -1.271279436570596
+        ],
+        "brier_beats_base": true,
+        "brier_diff": [
+          -0.05130977769905414,
+          -0.08353912656914729,
+          -0.01860266123606336
+        ],
+        "auc": 0.6522477522477522
+      }
+    },
+    "pre_listing": {
+      "IN_MAIN": {
+        "n": 171,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -7.480725609423716,
+          -10.179647098910303,
+          -4.895159099454516
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.011427543998128264,
+          -0.03426277757847488,
+          0.012000374485512225
+        ],
+        "auc": 0.6895881895881896
+      },
+      "IN_SME": {
+        "n": 653,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -5.282196359250253,
+          -6.891792271803104,
+          -3.790449935449841
+        ],
+        "brier_beats_base": false,
+        "brier_diff": [
+          -0.001614116487360404,
+          -0.007332942369516633,
+          0.004038218981752151
+        ],
+        "auc": 0.5950016388069486
+      },
+      "GLOBAL": {
+        "n": 142,
+        "p50_beats_median": true,
+        "mae_diff": [
+          -1.9762812872116695,
+          -2.5999032214808846,
+          -1.3129098215134956
+        ],
+        "brier_beats_base": true,
+        "brier_diff": [
+          -0.051370852129115394,
+          -0.08219119978843578,
+          -0.018127887633456623
+        ],
+        "auc": 0.6581418581418581
+      }
+    }
+  },
+  "data_hash": "07cf78bd",
+  "model_path": "/home/harshit/Projects/ipo-radar/models/bundle.joblib",
+  "metrics_path": "/home/harshit/Projects/ipo-radar/models/train_report.json",
+  "warnings": []
+}

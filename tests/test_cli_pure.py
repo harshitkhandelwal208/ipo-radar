@@ -2,16 +2,18 @@
 from __future__ import annotations
 
 import math
+import types
 from datetime import datetime, timedelta
 
 import pandas as pd
 
-from cli_helpers import (fake_ipos, fake_predict, history_frame, hd_fire_sme_conflict, no_skill_predict, now,
-                         today, tonbo)
+from cli_helpers import (fake_ipos, fake_predict, history_frame, hd_fire_sme_conflict, no_model_predict,
+                         no_skill_predict, now, today, tonbo)
 from ipo_radar.alerts.engine import IST
 from ipo_radar.cli import fmt, match
 from ipo_radar.cli.analysis import build_analysis, predict_all, to_jsonable
 from ipo_radar.cli.backend import health_from
+from ipo_radar.cli.model_rules import NO_MODEL_REASON, WORSE_REASON, unused_stages
 from ipo_radar.schema import LiveIPO, Sourced
 
 
@@ -135,6 +137,58 @@ def test_gmp_history_describes_a_populated_bucket():
     assert 0 <= a.gmp.history.share_positive <= 100
 
 
+def test_no_model_caveat_marks_the_median_as_the_headline():
+    ipo = tonbo()
+    a = build_analysis(ipo, no_model_predict(ipo), now=now(), unused={"pre_open": WORSE_REASON})
+    m = a.model
+    assert m.used is False and m.headline == 32.5 and m.median == 32.5
+    assert m.reason == WORSE_REASON and m.no_skill is True
+    assert any(f.label == "model not used" for f in a.flags)
+    assert "not used for the headline" in a.summary and "training median" in a.summary
+
+
+def test_no_model_caveat_without_a_recent_reason_gives_the_weight_reason():
+    ipo = tonbo()
+    a = build_analysis(ipo, no_model_predict(ipo), now=now(), unused={})
+    assert a.model.reason == NO_MODEL_REASON
+
+
+def test_the_models_own_range_comes_from_its_caveat():
+    ipo = tonbo()
+    m = build_analysis(ipo, no_model_predict(ipo), now=now()).model
+    assert (m.p10, m.p50, m.p90) == (-4.0, 12.0, 38.0)   # the model's range, not the shifted interval
+    assert m.headline == 32.5
+
+
+def test_own_range_parsing_is_strict():
+    from ipo_radar.cli.model_rules import own_range
+
+    assert own_range(["model's own range, not used at this stage: p10 -4.5, p50 12, p90 38.25 pp"]) == \
+        (-4.5, 12.0, 38.25)
+    assert own_range(["model's own range, not used at this stage: p10 x, p50 1, p90 2 pp"]) is None
+    assert own_range([]) is None
+
+
+def test_model_is_used_when_the_no_model_caveat_is_absent_even_if_recent_is_worse():
+    ipo = tonbo()
+    a = build_analysis(ipo, fake_predict(ipo), now=now(), unused={"pre_open": WORSE_REASON})
+    assert a.model.used is True and a.model.headline == 12.0
+
+
+def test_a_partial_blend_is_still_the_model():
+    ipo = tonbo()
+    p = fake_predict(ipo)
+    p.caveats = ["estimate shrunk toward the historical median at this stage (release weight, selected on 2022-2024)"]
+    assert build_analysis(ipo, p, now=now()).model.used is True
+
+
+def test_the_cli_copy_of_the_no_model_caveat_matches_the_model_package():
+    from ipo_radar.model import predict as model_predict
+    from ipo_radar.cli.model_rules import NO_MODEL_CAVEAT
+
+    assert NO_MODEL_CAVEAT == model_predict.NO_MODEL_CAVEAT
+
+
 def test_no_skill_flag_from_reliability_or_caveat():
     ipo = tonbo()
     assert build_analysis(ipo, fake_predict(ipo), now=now()).model.no_skill is False
@@ -228,3 +282,14 @@ def test_health_from_warnings_marks_down_ok_and_unknown():
     assert status["chittorgarh"].state == "ok"
     assert status["gmp"].state == "down"
     assert {s.state for s in health_from([])} == {"unknown"}
+
+
+def test_probability_display_bounds_at_both_edges():
+    assert fmt.probability_text(0.97) == ">=95%"
+    assert fmt.probability_text(0.95) == ">=95%"          # the edge itself is saturated
+    assert fmt.probability_text(0.9499) == "95%"
+    assert fmt.probability_text(0.02) == "<=5%"
+    assert fmt.probability_text(0.05) == "<=5%"           # the edge itself is saturated
+    assert fmt.probability_text(0.0501) == "5%"
+    assert fmt.probability_text(0.78) == "78%"
+    assert fmt.probability_text(None) == fmt.DASH

@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 
 from ipo_radar.model import features as F
 from ipo_radar.model.design import SEGMENTS, SET_MARKETS, Design, segment_of
-from ipo_radar.model.fitting import adjust_intervals, calibrate_prob, fit_stage, raw_components
+from ipo_radar.model.fitting import adjust_intervals, calibrate_prob, fit_stage, raw_components, shrink_quantiles
 
 LIN_FEATURE = {"day1": "log_sub_total_d1", "day2": "log_sub_total_d2", "close": "log_sub_total",
                "pre_listing": "log_sub_total"}
@@ -118,3 +118,21 @@ def run_walk(base: pd.DataFrame, spec: Design, years: Sequence[int], seeds: Sequ
                 }))
     records = pd.concat(recs, ignore_index=True) if recs else pd.DataFrame(columns=RECORD_COLS)
     return records, models
+
+
+def apply_shrink(records: pd.DataFrame, shrink: dict[str, float]) -> pd.DataFrame:
+    """Records with the open-gain median blended toward each segment's training median (fitting.shrink_quantiles).
+    Stages without a weight keep w = 1. Close-gain predictions are unchanged."""
+    if records.empty or not shrink:
+        return records.copy()
+    out = records.copy()
+    w = out["stage"].map(lambda s: shrink.get(s, 1.0)).to_numpy(float)
+    med = out["med_open"].to_numpy(float)
+    p10, p50, p90 = (out[c].to_numpy(float) for c in ("p10", "p50", "p90"))
+    ok = np.isfinite(med) & np.isfinite(p50)
+    n10, n50, n90 = shrink_quantiles(p10, p50, p90, w, np.where(ok, med, p50))
+    keep = ~ok | (w == 1.0)
+    out["p10"] = np.where(keep, p10, n10)
+    out["p50"] = np.where(keep, p50, n50)
+    out["p90"] = np.where(keep, p90, n90)
+    return out

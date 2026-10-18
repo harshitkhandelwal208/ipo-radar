@@ -104,6 +104,18 @@ def age_text(stamp: datetime | None, now: datetime) -> str:
     return f"{int(seconds // 86400)} d ago"
 
 
+def probability_text(p: float | None) -> str:
+    """A probability in 0..1 as a percentage. A saturated value reads as a bound, not as certainty: 0.97 is
+    '>=95%', 0.02 is '<=5%'. Anything else is a whole percentage."""
+    if not known(p):
+        return DASH
+    if p >= 0.95:
+        return ">=95%"
+    if p <= 0.05:
+        return "<=5%"
+    return f"{p * 100:.0f}%"
+
+
 def log_share(value: float | None, cap: float = 100.0) -> float | None:
     """Bar position 0..1 on a log scale that reaches 1 at `cap` times: 1x is 0.15, 10x is 0.52."""
     if not known(value):

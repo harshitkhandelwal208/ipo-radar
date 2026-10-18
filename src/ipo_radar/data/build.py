@@ -100,9 +100,10 @@ def _sanity(df: pd.DataFrame, report: BuildReport) -> None:
         _blank(df, (df[col] < 0) | (df[col] > 100), [col], f"{col} outside 0-100", report)
     for col in GAIN_COLS:
         _blank(df, df[col] < -100, [col], f"{col} below -100%", report)
-    # An exact 0 is almost never a real listing gain or GMP: sources write 0 where no value exists. Open gains are
-    # exactly 0 in 8-17% of rows from several sources, against 0-3% for close gains from the same sources. Blank them.
-    for col in GAIN_COLS + GMP_COLS:
+    # An exact 0 is almost never a real listing gain, GMP or subscription multiple: sources write 0 where no value
+    # exists. Open gains are exactly 0 in 8-17% of rows from several sources, against 0-3% for close gains from the same
+    # sources. Subscription multiples (final and day-wise) are blanked the same way, as the research report does.
+    for col in GAIN_COLS + GMP_COLS + SUB_COLS + SUB_DAY_COLS:
         _blank(df, df[col] == 0, [col], f"{col} exactly 0 (placeholder)", report)
     for col in NON_NEGATIVE_COLS:
         _blank(df, df[col] < 0, [col], f"{col} negative", report)

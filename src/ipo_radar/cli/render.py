@@ -160,6 +160,9 @@ def dashboard(rows: list[Analysis], *, ui: Ui, width: int, model_message: str | 
         parts.append(Text("Model P50 is an estimate of the listing-open gain. Not investment advice.", style=DIM))
         if any(a.model is not None and a.model.no_skill for a in rows):
             parts.append(Text(NO_SKILL_FOOTER, style=DIM))
+        if any(a.model is not None and not a.model.used for a in rows):
+            parts.append(Text("median (model not used here) = the segment's training median of the open gain, "
+                              "shown where the model is worse than the historical median at that stage", style=DIM))
     else:
         parts.append(Text(str(model_message), style=WARN))
     return Group(*parts)
@@ -169,9 +172,15 @@ NO_SKILL_FOOTER = ("~ no demonstrated skill over the historical median at this s
                    "the grey-market premium is often the better guide")
 
 
+MEDIAN_LABEL = "median (model not used here)"
+
+
 def _model_cell(m: ModelView | None, wide: bool) -> Text:
     if m is None:
         return Text(fmt.DASH, style=DIM)
+    if not m.used:  # the model is worse than the median here: show the median, marked as such
+        return Text.assemble(("~ ", DIM), (f"{m.median:+.0f}% median" if m.median is not None else "— median",
+                                           DIM if m.median is None else ""))
     text = f"{m.p50:+.0f}%"
     if wide:
         text += f" ({m.p10:+.0f} to {m.p90:+.0f})"
@@ -329,11 +338,20 @@ def _model(a: Analysis, ui: Ui, width: int, model_message: str | None) -> list[R
         return [Text(model_message or "no model view for this IPO", style=WARN if model_message else DIM)]
     bar_width = min(44, max(16, width - 34))
     baseline = fmt.percent(m.baseline_gmp_pct, sign=True) if m.baseline_gmp_pct is not None else fmt.DASH
-    lines: list[RenderableType] = [
-        Text("  listing-open gain (estimate)", style=DIM),
+    lines: list[RenderableType] = []
+    if m.used:
+        lines += [Text("  listing-open gain (estimate)", style=DIM)]
+    else:
+        headline = (f"{m.headline:+.0f}%" if m.headline is not None else fmt.DASH)
+        lines += [
+            Text.assemble(("  ~ ", DIM), (headline, "bold"), ("  " + MEDIAN_LABEL, "bold")),
+            Text(f"  the model is {m.reason}; its range below is for reference only", style=DIM),
+        ]
+    lines += [
         _range_bar(m, ui, bar_width),
-        Text(f"  P10 {m.p10:+.0f}%   P50 {m.p50:+.0f}%   P90 {m.p90:+.0f}%   "
-             f"P(opens above issue) {m.p_positive * 100:.0f}%"),
+        Text(f"  {'' if m.used else 'model, reference only: '}P10 {m.p10:+.0f}%   P50 {m.p50:+.0f}%   "
+             f"P90 {m.p90:+.0f}%   P(opens above issue) {fmt.probability_text(m.p_positive)}",
+             style="" if m.used else DIM),
         Text.assemble("  ", ("just trust GMP: ", DIM), (baseline, WARN),
                       ("   reliable: ", DIM), ("yes" if m.reliable else "no", GOOD if m.reliable else WARN)),
     ]

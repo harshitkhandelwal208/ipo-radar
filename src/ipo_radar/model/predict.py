@@ -25,7 +25,7 @@ from ipo_radar.model import ModelNotTrained
 from ipo_radar.model import features as F
 from ipo_radar.model.bundle import Bundle, StageModels
 from ipo_radar.model.design import segment_of
-from ipo_radar.model.fitting import adjust_intervals, calibrate_prob, raw_components
+from ipo_radar.model.fitting import adjust_intervals, calibrate_prob, raw_components, shrink_quantiles
 from ipo_radar.schema import CONTEXT_COLS, LiveIPO, Prediction
 
 MIN_MARKET_ROWS = 100    # fewer training IPOs in the market than this and the estimate is flagged
@@ -37,6 +37,10 @@ SUB_KEYS = ("sub_qib", "sub_nii", "sub_snii", "sub_bnii", "sub_retail", "sub_emp
 GMP_CAVEAT = "live GMP is earlier than the final pre-listing reading the model was trained on"
 VALUATION_CAVEAT = "valuation and financial ratios are not in the live feed; the model treats them as unknown"
 NO_CLEAR_CAVEAT = ("no clear difference from the historical median at this stage: no demonstrated skill over it")
+SHRINK_CAVEAT = "estimate shrunk toward the historical median at this stage (release weight, selected on 2022-2024)"
+NO_MODEL_CAVEAT = ("model estimate not used at this stage (release weight 0): the historical median is shown")
+MODEL_RANGE_CAVEAT = "model's own range, not used at this stage: p10 {}, p50 {}, p90 {} pp"
+# The CLI reads model_used from this caveat: when it is present the p50 is the segment median, not the model.
 WORSE_CAVEAT = "worse than the historical median at this stage on the latest blocks, 95% CI entirely above zero"
 SKILL_PROB_CAVEAT = "the chance of opening above the issue price does not beat the base rate at this stage"
 NO_SKILL_EVIDENCE = "no demonstrated skill: no pre-2025 walk-forward evidence for this stage and segment"
@@ -64,6 +68,16 @@ def _load_cached(file: str, mtime_ns: int) -> Bundle:
             if sm.features != F.stage_features(stage):
                 raise ModelNotTrained("the saved model was built with another feature set: run `ipo train`")
     return obj
+
+
+def _shrink_weight(bundle: Bundle, stage: str) -> float:
+    """Blend weight for a stage. An older bundle without the attribute, or an invalid value, means w = 1 (no blend)."""
+    shrink = getattr(bundle, "shrink", None) or {}
+    try:
+        w = float(shrink.get(stage, 1.0))
+    except (TypeError, ValueError, AttributeError):
+        return 1.0
+    return min(1.0, max(0.0, w)) if math.isfinite(w) else 1.0
 
 
 def _has_value(live: LiveIPO, key: str) -> bool:
@@ -201,6 +215,17 @@ def predict(live: LiveIPO, as_of: str | None = None, bundle: Bundle | None = Non
     comp = raw_components(sm, row, gmp_mode)
     lo, hi = adjust_intervals(sm.conf, comp["p10"], comp["p50"], comp["p90"], [segment])
     p10, p50, p90 = float(lo[0]), float(comp["p50"][0]), float(hi[0])
+    model_range = (p10, p50, p90)
+    w = _shrink_weight(b, stage)
+    if w < 1.0:
+        anchor = sm.open_median.get(segment or "ALL", sm.open_median.get("ALL"))
+        if anchor is None:
+            caveats.append("no training median for this segment: the model estimate is not shrunk")
+        else:
+            p10, p50, p90 = (float(v) for v in shrink_quantiles(p10, p50, p90, w, anchor))
+            caveats.append(SHRINK_CAVEAT if w > 0 else NO_MODEL_CAVEAT)
+            if w == 0:
+                caveats.append(MODEL_RANGE_CAVEAT.format(*(f"{v:+.1f}" for v in model_range)))
     prob = float(calibrate_prob(sm, comp["prob_raw"])[0])
     if sm.iso is None:
         caveats.append("probability not calibrated: too few out-of-fold points in training")

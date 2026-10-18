@@ -12,6 +12,7 @@ from ipo_radar.model import evaluate as ev
 from ipo_radar.model import features as F
 from ipo_radar.model import metrics
 from ipo_radar.model import walkforward as W
+from ipo_radar.model.design import DEFAULT_DESIGN
 from model_synth import make_ipos
 
 
@@ -31,7 +32,7 @@ def test_each_block_trains_only_on_ipos_listed_before_it(data, monkeypatch):
 
     monkeypatch.setattr(W, "fit_stage", spy)
     base = data[data["listing_date"].notna()].reset_index(drop=True)
-    records, _ = W.run_walk(base, ev.DEFAULT_DESIGN, [2022, 2023], [7], quick=True)
+    records, _ = W.run_walk(base, DEFAULT_DESIGN, [2022, 2023], [7], quick=True)
     fits = records.drop_duplicates(["year", "stage", "set"], keep="first")   # one fit per (year, stage, set)
     years = fits["year"].to_numpy()          # the walk fits in this same order
     assert len(calls) == len(years) > 0
@@ -113,19 +114,26 @@ def test_skill_flags_need_the_interval_below_zero():
     assert worse["close"]["IN_MAIN"]["p50_beats_median"] is False
 
 
-def test_evaluate_writes_the_protocol_headline_and_experiment_sections(data, tmp_path, monkeypatch):
-    monkeypatch.setattr(config, "MODELS", tmp_path)   # keeps the real experiments.json out of the test
+def test_evaluate_writes_the_release_sections_from_saved_records(data, tmp_path, monkeypatch):
+    from ipo_radar.model.train import train
+    monkeypatch.setattr(config, "MODELS", tmp_path)
+    train(data, out_dir=tmp_path, quick=True)          # writes the bundle and the selection/latest records
     out = tmp_path / "MODEL_REPORT.md"
-    result = ev.evaluate(data, out_path=out, seed=7, quick=True)
-    assert result.test_years == [2022, 2023, 2024]     # the synthetic table ends in 2024: no locked block
+    result = ev.evaluate(data, out_path=out)
     text = out.read_text(encoding="utf-8")
-    for section in ("## Protocol", "## Headline: locked blocks 2025-2026", "## What this model can and cannot tell you",
-                    "## Per-stage skill flags", "## Experiments", "## GMP-bearing training rows", "## Data warnings",
-                    "## Selection blocks 2022-2024"):
+    for section in ("## Protocol", "## Release: 2022-2024 before and after", "## Headline: 2025-2026",
+                    "## What this model can and cannot tell you", "## Per-stage skill flags", "## Experiments",
+                    "## GMP-bearing training rows", "## Data warnings", "## Selection blocks 2022-2024"):
         assert section in text, section
-    assert "no longer blind" in text
-    assert "The experiment file is missing" in text    # no experiments.json in the temporary models folder
+    assert "no longer a holdout" in text
+    assert "No release comparison file was found" in text   # the temporary folder has no comparison yet
     assert set(result.verdicts) <= set(F.STAGES)
+
+
+def test_evaluate_refuses_to_run_without_release_records(data, tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "MODELS", tmp_path)
+    with pytest.raises(ValueError, match="release"):
+        ev.evaluate(data, out_path=tmp_path / "r.md")
 
 
 def test_gmp_row_counts_are_split_by_segment_and_year(data):

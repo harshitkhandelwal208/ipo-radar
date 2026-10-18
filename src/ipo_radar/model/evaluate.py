@@ -17,20 +17,22 @@ import numpy as np
 import pandas as pd
 
 from ipo_radar import config
-from ipo_radar.model.experiments import SEED
 from ipo_radar.model import features as F
 from ipo_radar.model import metrics
-from ipo_radar.model.design import DEFAULT_DESIGN, LOCKED_YEARS, PROTOCOL, SELECTION_YEARS, Design, segment_of
-from ipo_radar.model.fitting import raw_components
+from ipo_radar.model.design import LOCKED_YEARS, PROTOCOL, SELECTION_YEARS, segment_of
 from ipo_radar.model.train import data_hash
-from ipo_radar.model.walkforward import expanded_frame, run_walk
+from ipo_radar.model.bundle import Bundle
+from ipo_radar.model.predict import load_model
+from ipo_radar.model.search import SHRINK_GRID
+from ipo_radar.model.walkforward import apply_shrink
 
 REPORT_YEARS = tuple(SELECTION_YEARS) + tuple(LOCKED_YEARS)
 SHOW_YEARS = (2023, 2024)
 REPORT_MARKETS = ("IN_MAIN", "IN_SME", "US", "HK", "OTHER")
 LOCKED_NOTE = (
-    "2025-2026 were seen once in the earlier report (before the protocol), and again after the placeholder blanking "
-    "(see Data change). Nothing was chosen from them, but they are no longer blind.")
+    "2025-2026 is no longer a holdout: it has been used for serving caveats and reviewed repeatedly. It is reported "
+    "once, for the record, and no choice was made from it. No clean holdout remains until new IPOs are tracked after "
+    "release.")
 PREVIOUS_HEADLINE = config.MODELS / "superseded-zero-fix" / "locked_headline.json"
 BUILD_COVERAGE = config.PROCESSED / "COVERAGE.md"
 
@@ -203,50 +205,62 @@ def _gmp_counts(base: pd.DataFrame) -> str:
     return _table(["segment", "GMP-bearing rows (all years)", "before 2025", "rows per listing year"], rows)
 
 
-def _importance(models: dict, base: pd.DataFrame, expanded: pd.DataFrame, year: int) -> tuple[str, str]:
-    """Gain share per group (the pooled median models of `year`) and permutation increase on that year's rows."""
-    rng = np.random.default_rng(SEED)
-    vocab = F.fit_vocab(base[base["listing_date"].dt.year < year])
-    gain_rows, perm_rows = [], []
-    groups = list(F.GROUPS)
-    per_stage: dict[str, dict] = {}
-    for stage in F.STAGES:
-        sm = models.get(("pooled", stage, year))
-        if sm is None:
-            continue
+def _gain_table(bundle: Bundle) -> str:
+    """Gain share per feature group of the final pooled median models. In-sample: the release bundle is trained on all
+    IPOs, so this shows what the model uses, not how well it generalises (permutation needs a holdout fit)."""
+    per_stage = {}
+    for stage, sm in bundle.stages.items():
         raw = sm.q50.booster_.feature_importance(importance_type="gain")
         total = float(raw.sum()) or 1.0
-        gains = {g: 0.0 for g in groups}
+        gains = {g: 0.0 for g in F.GROUPS}
         for name, value in zip(sm.features, raw):
             gains[F.group_of(name)] += float(value) / total * 100
-        rows = expanded[(expanded["as_of"] == stage) & (expanded["listing_date"].dt.year == year)]
-        Xte = F.design(rows, stage, vocab)
-        mask = rows[F.TARGET_OPEN].notna().to_numpy()
-        Xo, y = Xte[mask], rows[F.TARGET_OPEN].to_numpy(float)[mask]
-        base_mae = float(np.abs(y - F.from_model_scale(sm.q50.predict(Xo))).mean())
-        inc = {}
-        for g in groups:
-            cols = [f for f in sm.features if F.group_of(f) == g]
-            if not cols or len(Xo) < metrics.MIN_VERDICT_ROWS:
-                continue
-            deltas = []
-            for _ in range(5):
-                order = rng.permutation(len(Xo))
-                Xp = Xo.copy()
-                for c in cols:
-                    Xp[c] = Xo[c].iloc[order].set_axis(Xo.index)
-                deltas.append(float(np.abs(y - F.from_model_scale(sm.q50.predict(Xp))).mean()) - base_mae)
-            inc[g] = float(np.mean(deltas))
-        per_stage[stage] = {"gain": gains, "perm": inc}
-    if not per_stage:
-        return "n/a", "n/a"
+        per_stage[stage] = gains
     stages = list(per_stage)
-    gain = _table(["group (gain %)", *stages],
-                  [[g, *[_f(per_stage[s]["gain"][g]) for s in stages]] for g in groups])
-    perm = _table(["group (permutation, pp)", *stages],
-                  [[g, *[_f(per_stage[s]["perm"].get(g), 2, sign=True) if g in per_stage[s]["perm"] else "n/a"
-                         for s in stages]] for g in groups])
-    return gain, perm
+    return _table(["group (gain %)", *stages], [[g, *[_f(per_stage[s][g]) for s in stages]] for g in F.GROUPS])
+
+
+RELEASE_COLUMNS = (("previous_config_previous_data", "previous config, previous data (1 seed)"),
+                   ("previous_config_current_data", "previous config, current data (1 seed)"),
+                   ("tuned_config_current_data", "tuned params, current data (1 seed)"),
+                   ("after_release", "release: tuned if chosen, 5 seeds, shrink"))
+
+
+def _release_table(comparison: dict) -> str:
+    rows = []
+    for stage in [*F.STAGES, "ALL"]:
+        row = [stage]
+        for key, _ in RELEASE_COLUMNS:
+            b = comparison.get(key, {}).get("stages", {}).get(stage, {})
+            if not b.get("n"):
+                row.append("n/a")
+                continue
+            pinball = float(np.mean(list(b["pinball"].values())))
+            row.append(f"MAE {_f(b['mae'])}; pinball {_f(pinball, 2)}; coverage {_f(b['coverage'], 0)}%; "
+                       f"vs median {_ci(b.get('diff_median'))}")
+        rows.append(row)
+    return _table(["stage", *[label for _, label in RELEASE_COLUMNS]], rows)
+
+
+def _shrink_table(comparison: dict) -> str:
+    weights = comparison.get("shrink", {}).get("weights", {})
+    losses = comparison.get("shrink", {}).get("pinball_by_weight", {})
+    rows = [[s, weights[s], *[_f(losses.get(s, {}).get(f"{w:.2f}"), 3) for w in SHRINK_GRID]]
+            for s in F.STAGES if s in weights]
+    return _table(["stage", "chosen w", *[f"pinball at w={w:.2f}" for w in SHRINK_GRID]], rows)
+
+
+def _parameters_text(comparison: dict) -> list[str]:
+    p = comparison.get("parameters", {})
+    if not p:
+        return ["No release comparison file was found: run `python -m ipo_radar.model.release`."]
+    return [
+        f"Decision: **{p.get('decision')}** parameters (the tuned set is used only if its 2022-2024 single-seed pinball "
+        f"loss is lower than the default's). Chosen overrides: `{json.dumps(p.get('chosen', {}))}`.",
+        f"Optuna search: {p.get('search_trials')} trials on 2022-2024. Default settings loss "
+        f"{_f(p.get('search_default_loss'), 4)}, best {_f(p.get('search_best_loss'), 4)}. Best settings: "
+        f"`{json.dumps({k: round(float(v), 4) for k, v in p.get('search_best', {}).items()})}`.",
+    ]
 
 
 def _rows_table(base: pd.DataFrame) -> str:
@@ -386,82 +400,86 @@ def _what_it_tells(locked: dict, skill: dict, shown: dict, selection: dict) -> l
     ]
 
 
-def evaluate(df: pd.DataFrame | None = None, out_path: Path | None = None, seed: int = 7, quick: bool = False,
-             spec: Design | None = None) -> EvalResult:
-    """Evaluate the chosen design on 2022-2026 walk-forward blocks and write the report."""
+def evaluate(df: pd.DataFrame | None = None, out_path: Path | None = None) -> EvalResult:
+    """Write the report from the saved release: the bundle, its selection and latest-block records, and the
+    comparison file. Run `python -m ipo_radar.model.release` first."""
     base = pd.read_parquet(config.IPOS_PARQUET) if df is None else df
     base = base[base["listing_date"].notna()].reset_index(drop=True)
-    if base.empty:
-        raise ValueError("no IPO has a listing date: nothing to evaluate")
-    spec = spec or DEFAULT_DESIGN
-    records, models = run_walk(base, spec, REPORT_YEARS, [seed], quick, keep_models=True)
-    if records.empty:
-        raise ValueError("no walk-forward block had enough rows to evaluate")
+    sel_path, lat_path = config.MODELS / "selection_records.parquet", config.MODELS / "latest_records.parquet"
+    if not (sel_path.exists() and lat_path.exists()):
+        raise ValueError("no release records found: run `python -m ipo_radar.model.release` first")
+    bundle = load_model()
+    shrink = getattr(bundle, "shrink", None) or {}
+    selection = apply_shrink(pd.read_parquet(sel_path), shrink)
+    latest = apply_shrink(pd.read_parquet(lat_path), shrink)
     rng = np.random.default_rng(metrics.BOOT_SEED)
-    sel = records[records["year"].isin(SELECTION_YEARS)]
-    locked = records[records["year"].isin(LOCKED_YEARS)]
-    shown = records[records["year"].isin(SHOW_YEARS)]
-    skill = metrics.skill(sel)
-    sel_status = metrics.stage_status(sel) if len(sel) else {}
-    h_locked = _headline(locked, rng)
-    h_shown = _headline(shown, rng)
-
-    base_x, expanded = expanded_frame(base)
-    gain_t, perm_t = _importance(models, base_x, expanded, max(LOCKED_YEARS))
+    h_locked = _headline(latest, rng)
+    h_shown = _headline(selection[selection["year"].isin(SHOW_YEARS)], rng)
+    skill = metrics.skill(selection)
+    sel_status = metrics.stage_status(selection)
+    comparison_file = config.MODELS / "release_comparison.json"
+    comparison = json.loads(comparison_file.read_text(encoding="utf-8")) if comparison_file.exists() else {}
 
     dhash = data_hash(base)
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    design_dict = spec.as_dict()
     lines = [
-        "# Model report: walk-forward evaluation", "",
-        f"Generated {stamp}. Data hash {dhash}, seed {seed}{', quick mode' if quick else ''}. Design: "
-        f"`{json.dumps(design_dict)}`.", "",
+        "# Model report: release evaluation", "",
+        f"Generated {stamp}. Bundle {bundle.version}, data hash {dhash}, seeds {bundle.seeds}. Design: "
+        f"`{json.dumps(bundle.design)}`. Shrink weights: `{json.dumps(getattr(bundle, "shrink", None) or {})}`. Parameters: "
+        f"`{json.dumps(bundle.params)}`.", "",
         *_data_change_section(h_locked, PREVIOUS_HEADLINE), "",
         "## Protocol", "",
         f"- {PROTOCOL}",
-        f"- Selection blocks: listing years {', '.join(map(str, SELECTION_YEARS))}. Locked blocks: "
-        f"{', '.join(map(str, LOCKED_YEARS))}. Every block is predicted by models trained only on IPOs listed before it.",
-        f"- {LOCKED_NOTE}",
-        "- The design above is fixed in code (model/design.py) before this report is generated; the locked numbers "
-        "below are the one evaluation of that design.", "",
-        "## Headline: locked blocks 2025-2026", "",
-        "Units: percentage points (pp) of the issue price. 'p50 - median' is the model's MAE minus the MAE of the "
-        "segment's training median, on the same IPOs; a negative value is better. Intervals are 95% bootstrap intervals "
-        "over IPOs. Skill flags come from 2022-2024 only.", "",
+        f"- Selection blocks: listing years {', '.join(map(str, SELECTION_YEARS))}. Every choice in this release (shrink "
+        "weights, the Optuna search, the parameter decision) was made on those blocks only. Every block is predicted by "
+        "models trained only on IPOs listed before it.",
+        f"- {LOCKED_NOTE}", "",
+        "## Release: 2022-2024 before and after", "",
+        "Pinball is the mean of the p10, p50 and p90 losses. 'vs median' is the model's p50 MAE minus the segment's "
+        "training median MAE on the same IPOs, with a 95% bootstrap interval (negative is better).", "",
+        _release_table(comparison), "",
+        *_parameters_text(comparison), "",
+        "Shrink weights were chosen per stage by the pinball loss of the blended p50 on 2022-2024:", "",
+        _shrink_table(comparison), "",
+        "## Headline: 2025-2026 (recorded once, not used for any choice)", "",
+        "Units: percentage points (pp) of the issue price. Intervals are 95% bootstrap intervals over IPOs. The per-stage "
+        "skill flags come from 2022-2024 only.", "",
         _headline_table(h_locked, skill), "",
-        "## Same measures, 2023-2024 (selection era, shown for comparison)", "",
+        "## Same measures, 2023-2024", "",
         _headline_table(h_shown, skill), "",
         "## What this model can and cannot tell you", "",
         *_what_it_tells(h_locked, skill, h_shown, sel_status), "",
-        "## Selection blocks 2022-2024, pooled over segments", "", _selection_table(sel_status), "",
-        "## Per-stage skill flags (2022-2024, saved in the bundle)", "",
+        "## Per-stage skill flags (2022-2024, per segment, saved in the bundle)", "",
         _segment_skill_table(skill), "",
-        "## Experiments: every option, kept or dropped (2022-2024)", "",
+        "## Selection blocks 2022-2024, pooled over segments", "", _selection_table(sel_status), "",
+        "## Experiments: every option, kept or dropped (earlier design search, 2022-2024)", "",
         *_experiments_section(config.MODELS / "experiments.json"),
         "## Close-gain median, locked blocks", "", _close_table(h_locked), "",
-        "## Locked blocks by market", "", _markets_table(locked, rng), "",
-        "## Calibration of P(opens above issue price), locked blocks", "", _calibration_table(locked),
-        "## Every block (2022-2026)", "", _block_table(records), "",
+        "## Locked blocks by market", "", _markets_table(latest, rng), "",
+        "## Calibration of P(opens above issue price), locked blocks", "", _calibration_table(latest), "",
+        "## Every block (2022-2026)", "", _block_table(pd.concat([selection, latest], ignore_index=True)), "",
         "## GMP-bearing training rows", "", _gmp_counts(base), "",
-        "## Feature-group importance (last locked block, pooled model)", "",
-        "Gain share of the median model; permutation is the increase in open-gain MAE (pp) when the group's inputs "
-        "are shuffled on the block.", "", gain_t, "", perm_t, "",
+        "## Feature-group importance (final bundle, in-sample gain)", "", _gain_table(bundle), "",
         "## Rows per market", "", _rows_table(base), "",
         "## Data warnings", "",
         "- Survivorship: the table holds only IPOs that listed; every estimate is optimistic for the average issue.",
         "- Sources joined by date: India and US tables come from different sites; date or price mismatches show up as "
         "noise.",
         "- GMP is unofficial grey-market data, taken shortly before listing, and exists only for India from 2020.",
+        "- Exact-zero subscription multiples and listing gains are treated as missing placeholders (see the build notes).",
         "- The live feed carries no valuation or financial ratios, so those inputs are missing at serving time.",
-        "- The walk-forward blocks are years of listing; 2026 is a partial year.",
+        "- 2026 is a partial year.",
         "- Monotone constraints apply to the classifier only: LightGBM rejects them for quantile objectives.",
+        "- The release bundle is trained on all IPOs, so its in-sample numbers are not evidence of accuracy.",
     ]
     out = out_path or config.ROOT / "docs" / "MODEL_REPORT.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     verdicts = {s: _verdict_line(s, h_locked[s]) for s in F.STAGES if s in h_locked}
-    return EvalResult(report_path=str(out), test_years=sorted(int(y) for y in records["year"].unique()),
-                      n_test_rows=int(records["ipo_id"].nunique()), data_hash=dhash, verdicts=verdicts, skill=skill)
+    years = sorted({int(y) for y in pd.concat([selection, latest])["year"].unique()})
+    return EvalResult(report_path=str(out), test_years=years,
+                      n_test_rows=int(pd.concat([selection, latest])["ipo_id"].nunique()), data_hash=dhash,
+                      verdicts=verdicts, skill=skill)
 
 
 def main() -> None:

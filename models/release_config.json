@@ -1,0 +1,26 @@
+{
+  "params": {},
+  "seeds": [
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "params_decision": "default",
+  "search_best": {
+    "learning_rate": 0.01126804111986374,
+    "num_leaves": 30,
+    "min_child_samples": 11,
+    "feature_fraction": 0.8216101961124143,
+    "bagging_fraction": 0.9336410135858492,
+    "reg_lambda": 0.23875849990154843
+  },
+  "search_default_loss": 12.968490680322637,
+  "search_best_loss": 12.640174776003814,
+  "search_trials": 40,
+  "single_seed_pinball": {
+    "default": 12.287179564569188,
+    "tuned": 12.290604916144906
+  }
+}

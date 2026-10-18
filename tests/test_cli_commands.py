@@ -14,7 +14,9 @@ import pandas as pd
 import pytest
 from typer.testing import CliRunner
 
-from cli_helpers import Broken, Recorder, fake_ipos, fake_predict, history_frame, no_skill_predict, now, tonbo
+from cli_helpers import (Broken, Recorder, fake_ipos, fake_predict, history_frame, no_model_predict,
+                         no_skill_predict, now, tonbo)
+from ipo_radar.cli.model_rules import WORSE_REASON
 from ipo_radar import config
 from ipo_radar.alerts import daemon
 from ipo_radar.cli import backend
@@ -38,6 +40,7 @@ class Env:
         self.sources: list[live_health.SourceHealth] = [
             live_health.SourceHealth(n, True, 12.0, f"{n} ok", None) for n in ("nse", "chittorgarh", "gmp", "ntfy")]
         self.refresh_calls: list[bool] = []
+        self.unused: dict[str, str] = {}   # stage -> why the model is not the headline there
 
 
 @pytest.fixture
@@ -61,7 +64,7 @@ def env(tmp_path, monkeypatch) -> Env:
     def predictor() -> backend.Predictor:
         if e.model_error:
             raise backend.ModelUnavailable(e.model_error)
-        return backend.Predictor(e.predict, "test-1", "2026-10-15T07:00:31+00:00", 4933)
+        return backend.Predictor(e.predict, "test-1", "2026-10-15T07:00:31+00:00", 4933, dict(e.unused))
 
     def load_history() -> pd.DataFrame:
         if e.history is None:
@@ -687,3 +690,61 @@ def test_plain_is_accepted_after_the_command(env):
     for args in (["fetch", "--plain", "--no-alerts"], ["live", "--plain"], ["history", "--plain"],
                  ["alerts", "status", "--plain"], ["doctor", "--plain"]):
         assert "\x1b[" not in run(args, env_vars={"FORCE_COLOR": "1"}).output, args
+
+
+# ---- median in place of the model where the model is worse than the historical median ----------------
+MEDIAN_FOOTER = ("median (model not used here) = the segment's training median of the open gain, "
+                 "shown where the model is worse than the historical median at that stage")
+
+
+def test_dashboard_shows_the_median_where_the_model_is_not_used(env):
+    env.predict = no_model_predict   # predict() put the segment median in the P50 and added the NO_MODEL caveat
+    r = run(["--plain", "live"], columns=200)
+    assert r.exit_code == 0, r.output
+    assert "~ +32% median" in r.output
+    assert "+12%" not in r.output
+    assert MEDIAN_FOOTER in r.output
+
+
+def test_show_labels_the_median_and_keeps_the_model_range_as_reference(env):
+    env.predict = no_model_predict
+    env.unused = {"pre_open": WORSE_REASON}
+    r = run(["--plain", "show", "tonbo"], columns=160)
+    assert r.exit_code == 0, r.output
+    assert "~ +32%  median (model not used here)" in r.output
+    assert "the model is worse than the historical median at this stage on the latest blocks" in r.output
+    assert "model, reference only: P10 -4%   P50 +12%   P90 +38%" in r.output
+    assert "not used for the headline" in r.output
+
+
+def test_show_uses_the_model_p50_when_the_model_is_used(env):
+    r = run(["--plain", "show", "tonbo"], columns=160)
+    assert "P10 -4%   P50 +12%   P90 +38%" in r.output
+    assert "median (model not used here)" not in r.output
+
+
+def test_backend_reads_the_bundle_and_reports_unused_stages(monkeypatch):
+    """The real backend.predictor() with a fake model package: its bundle's recent flags decide the stages."""
+    bundle = types.SimpleNamespace(
+        version="v-test", trained_at="2026-10-18T07:00:00+00:00", n_rows=5000,
+        recent={"pre_open": {"worse": True}, "day1": {"worse": False}}, shrink={"day1": 0.0})
+    fake = types.ModuleType("ipo_radar.model.predict")
+    fake.load_model = lambda: bundle  # type: ignore[attr-defined]
+    fake.predict = lambda ipo, as_of=None: None  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "ipo_radar.model.predict", fake)
+    pred = backend.predictor()
+    assert pred.version == "v-test" and pred.n_rows == 5000
+    assert set(pred.not_used) == {"pre_open"}   # the blend weight is the model's; only the 'worse' flag is read
+
+
+def test_show_bounds_a_saturated_probability_instead_of_reading_certainty(env):
+    def certain(ipo):
+        p = fake_predict(ipo)
+        p.p_positive_open = 0.97
+        return p
+
+    env.predict = certain
+    r = run(["--plain", "show", "tonbo"], columns=160)
+    assert "P(opens above issue) >=95%" in r.output
+    assert "P(opens above issue) 100%" not in r.output
+    assert "chance of opening above the issue price" in r.output

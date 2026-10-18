@@ -26,7 +26,8 @@ from ipo_radar.model import features as F
 from ipo_radar.model.bundle import Bundle
 from ipo_radar.model.design import DEFAULT_DESIGN, LOCKED_YEARS, PROTOCOL, SELECTION_YEARS, SET_MARKETS, Design, segment_of
 from ipo_radar.model.fitting import fit_stage
-from ipo_radar.model.walkforward import run_walk
+from ipo_radar.model.search import choose_shrink
+from ipo_radar.model.walkforward import apply_shrink, run_walk
 
 
 @dataclass
@@ -42,6 +43,8 @@ class TrainReport:
     gmp_rows: dict[str, dict[str, int]]
     skill: dict
     recent: dict
+    shrink: dict
+    shrink_table: dict
     data_hash: str
     model_path: str
     metrics_path: str
@@ -104,22 +107,28 @@ def train(df: pd.DataFrame | None = None, out_dir: Path = config.MODELS, seed: i
         raise ValueError("no stage had enough rows to train")
 
     selection = [y for y in SELECTION_YEARS if (usable["listing_date"].dt.year == y).any()]
-    records, _ = run_walk(usable, spec, selection, seed_list, quick, params)
-    skill = metrics.skill(records) if len(records) else {}
+    raw, _ = run_walk(usable, spec, selection, seed_list, quick, params)
+    shrink, shrink_table = choose_shrink(raw) if len(raw) else ({}, {})
+    selected = apply_shrink(raw, shrink)
+    skill = metrics.skill(selected) if len(selected) else {}
     if not skill:
         warnings.append("no walk-forward block in 2022-2024 had enough rows: skill flags are empty")
     latest = [y for y in LOCKED_YEARS if (usable["listing_date"].dt.year == y).any()]
-    latest_records, _ = run_walk(usable, spec, latest, seed_list, quick, params)
-    recent = {stage: {**st, "years": latest} for stage, st in metrics.stage_status(latest_records).items()} \
-        if len(latest_records) else {}
+    latest_raw, _ = run_walk(usable, spec, latest, seed_list, quick, params)
+    latest_shrunk = apply_shrink(latest_raw, shrink)
+    recent = {stage: {**st, "years": latest} for stage, st in metrics.stage_status(latest_shrunk).items()} \
+        if len(latest_shrunk) else {}
 
     dhash = data_hash(usable)
     now = datetime.now(timezone.utc)
     version = f"{now:%Y%m%d}-{dhash}"
     bundle = Bundle(version=version, trained_at=now.isoformat(timespec="seconds"), n_rows=len(usable),
                     stages=pooled, vocab=vocab, seed=seed, seeds=seed_list, design=spec.as_dict(),
-                    routing=dict(spec.routing), alt_sets=sets, skill=skill, recent=recent, protocol=PROTOCOL)
+                    routing=dict(spec.routing), alt_sets=sets, skill=skill, recent=recent, shrink=shrink,
+                    params=dict(params or {}), protocol=PROTOCOL)
     out_dir.mkdir(parents=True, exist_ok=True)
+    raw.to_parquet(out_dir / "selection_records.parquet", index=False)
+    latest_raw.to_parquet(out_dir / "latest_records.parquet", index=False)
     model_path = out_dir / "bundle.joblib"
     metrics_path = out_dir / "train_report.json"
     _atomic_write(model_path, lambda p: joblib.dump(bundle, p))
@@ -131,7 +140,8 @@ def train(df: pd.DataFrame | None = None, out_dir: Path = config.MODELS, seed: i
         version=version, trained_at=bundle.trained_at, n_rows=len(usable), quick=quick,
         params=dict(params or {}), seeds=seed_list,
         stages={s: _stage_summary(pooled.get(s)) for s in F.STAGES}, design=spec.as_dict(), gmp_rows=gmp_rows,
-        skill=skill, recent=recent, data_hash=dhash, model_path=str(model_path), metrics_path=str(metrics_path),
+        skill=skill, recent=recent, shrink=shrink, shrink_table=shrink_table, data_hash=dhash,
+        model_path=str(model_path), metrics_path=str(metrics_path),
         warnings=warnings,
     )
     _atomic_write(metrics_path, lambda p: p.write_text(json.dumps(asdict(report), indent=2, default=str),
@@ -139,8 +149,16 @@ def train(df: pd.DataFrame | None = None, out_dir: Path = config.MODELS, seed: i
     return report
 
 
+RELEASE_CONFIG = config.MODELS / "release_config.json"
+
+
 def main() -> None:
-    report = train()
+    """Train with the release settings (params and seeds) when models/release_config.json exists."""
+    if RELEASE_CONFIG.exists():
+        cfg = json.loads(RELEASE_CONFIG.read_text(encoding="utf-8"))
+        report = train(params=cfg["params"], seeds=cfg["seeds"])
+    else:
+        report = train()
     print(f"trained bundle {report.version} on {report.n_rows} IPOs -> {report.model_path}")
     for stage, info in report.stages.items():
         print(f"  {stage}: trained={info.get('trained')}")

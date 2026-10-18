@@ -15,6 +15,7 @@ from typing import Any, Callable
 import pandas as pd
 
 from ipo_radar.cli import fmt
+from ipo_radar.cli.model_rules import NO_MODEL_CAVEAT, NO_MODEL_REASON, own_range
 from ipo_radar.schema import LiveIPO, Prediction
 
 STALE_AFTER = timedelta(minutes=60)   # a GMP reading older than this is flagged as possibly out of date
@@ -121,7 +122,11 @@ class ModelView:
     p10: float
     p50: float
     p90: float
-    no_skill: bool             # True: the P50 does not beat the historical median here, so it gets a '~' marker
+    used: bool                 # False: the model is worse than the historical median here, so it is not the headline
+    headline: float | None     # the estimate shown: the model's P50 when used, else the segment's training median
+    median: float | None       # the segment's training median of the open gain (the model's own baseline)
+    reason: str | None         # why the model is not used at this stage
+    no_skill: bool             # True: the headline has no demonstrated skill over the median, so it gets a '~'
     p_positive: float          # probability in 0..1
     close_p50: float | None
     baseline_gmp_pct: float | None
@@ -266,11 +271,23 @@ def _gmp(ipo: LiveIPO, seg: pd.DataFrame | None) -> Gmp:
     return Gmp(readings, median, pct, conflicts, hist, note, miss, miss_n)
 
 
-def _model(pred: Prediction) -> ModelView:
-    no_skill = not pred.reliable or any(NO_SKILL_TEXT in c for c in pred.caveats)
+def _model(pred: Prediction, reason: str | None) -> ModelView:
+    """When the model is not used, predict() has already put the segment's training median in the P50."""
+    used = NO_MODEL_CAVEAT not in pred.caveats
+    if not used and reason is None:
+        reason = NO_MODEL_REASON
+    median = None if used else _clean(pred.open_gain_pct_p50)
+    no_skill = (not pred.reliable) or any(NO_SKILL_TEXT in c for c in pred.caveats) or not used
+    # When the model is not used, the interval in the Prediction is shifted to the median; the model's own
+    # range is what its caveat reports, and that is what the reference line shows.
+    p10, p50, p90 = (pred.open_gain_pct_p10, pred.open_gain_pct_p50, pred.open_gain_pct_p90)
+    own = None if used else own_range(pred.caveats)
+    if own is not None:
+        p10, p50, p90 = own
     return ModelView(
-        as_of=pred.as_of, p10=pred.open_gain_pct_p10, p50=pred.open_gain_pct_p50, p90=pred.open_gain_pct_p90,
-        no_skill=no_skill,
+        as_of=pred.as_of, p10=p10, p50=p50, p90=p90,
+        used=used, headline=pred.open_gain_pct_p50 if used else median, median=median,
+        reason=reason, no_skill=no_skill,
         p_positive=pred.p_positive_open, close_p50=_clean(pred.close_gain_pct_p50),
         baseline_gmp_pct=_clean(pred.baseline_gmp_pct), reliable=pred.reliable,
         drivers=list(pred.drivers), caveats=list(pred.caveats), version=pred.model_version,
@@ -307,6 +324,9 @@ def _flags(ipo: LiveIPO, issue: Issue, subs: list[SubRow], gmp: Gmp, model: Mode
     # Subscription differences are not flagged here: the merge's own single-line warning is shown once, under
     # Data notes in `ipo show`, as written.
     out += [Flag("warn", w, "GMP sources disagree") for w in gmp.conflicts]
+    if model is not None and not model.used:
+        out.append(Flag("warn", f"model not used for the headline: {model.reason}; the headline is the "
+                                "segment's training median", "model not used"))
     if model is not None and not model.reliable:
         out.append(Flag("warn", "model inputs fall outside its training data: the estimate is less reliable",
                         "model outside training data"))
@@ -317,9 +337,17 @@ def _flags(ipo: LiveIPO, issue: Issue, subs: list[SubRow], gmp: Gmp, model: Mode
 
 def _summary(model: ModelView | None, gmp: Gmp, subs: list[SubRow], flags: list[Flag]) -> str:
     parts: list[str] = []
-    if model is not None:
+    if model is not None and not model.used:
+        if model.median is not None:
+            parts.append(f"Estimate: the model is not used for the headline here, because it is {model.reason}. "
+                         f"The segment's training median listing-open gain is {model.median:+.0f}%; the model's "
+                         f"range ({model.p10:+.0f}% to {model.p90:+.0f}%) is shown for reference only.")
+        else:
+            parts.append(f"Estimate: the model is not used here ({model.reason}), and no training median is "
+                         "available for this segment.")
+    elif model is not None:
         parts.append(f"Estimate: the model puts the listing-open gain at {model.p50:+.0f}% (range "
-                     f"{model.p10:+.0f}% to {model.p90:+.0f}%), with a {model.p_positive * 100:.0f}% estimated "
+                     f"{model.p10:+.0f}% to {model.p90:+.0f}%), with a {fmt.probability_text(model.p_positive)} estimated "
                      "chance of opening above the issue price.")
     else:
         parts.append("Estimate: no model view is available yet.")
@@ -344,14 +372,17 @@ def _summary(model: ModelView | None, gmp: Gmp, subs: list[SubRow], flags: list[
 
 
 def build_analysis(ipo: LiveIPO, pred: Prediction | None, *, now: datetime,
-                   history: pd.DataFrame | None = None) -> Analysis:
-    """`now` must be timezone-aware in IST; the day-count logic uses its date."""
+                   history: pd.DataFrame | None = None, unused: dict[str, str] | None = None) -> Analysis:
+    """`now` must be timezone-aware in IST; the day-count logic uses its date. `unused` gives the reason, per stage,
+    that the model is worse than the historical median (see cli.model_rules)."""
     today = now.date()
     seg = _segment(history, ipo.market)
     issue = _issue(ipo)
     subs = _subs(ipo, seg)
     gmp = _gmp(ipo, seg)
-    model = _model(pred) if pred is not None else None
+    model = None
+    if pred is not None:
+        model = _model(pred, (unused or {}).get(pred.as_of))
     flags = _flags(ipo, issue, subs, gmp, model, today, now)
     return Analysis(
         ipo_id=ipo.ipo_id, company=ipo.company, symbol=ipo.symbol, market=ipo.market,

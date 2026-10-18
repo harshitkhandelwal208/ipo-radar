@@ -7,3 +7,9 @@ __pycache__/
 .env
 secrets/
 *.egg-info/
+dist/
+build/
+models/bundle-full.joblib
+models/local-archive/
+models/superseded-sub-zero/
+models/*.parquet

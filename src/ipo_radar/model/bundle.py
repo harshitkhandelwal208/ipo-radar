@@ -58,6 +58,7 @@ class StageModels:
     conf_n: dict[str, int] = field(default_factory=dict)      # out-of-fold residuals behind each adjustment
     gmp_linear: list | None = None                # three linear quantile regressions (p10, p50, p90), pre_listing only
     gmp_counts: dict[str, dict[int, int]] = field(default_factory=dict)  # segment -> listing year -> GMP rows
+    open_median: dict[str, float] = field(default_factory=dict)   # segment (or ALL) -> training median open gain
 
 
 @dataclass
@@ -74,6 +75,8 @@ class Bundle:
     alt_sets: dict[str, dict[str, StageModels]] = field(default_factory=dict)  # every set except 'pooled'
     skill: dict[str, dict[str, dict]] = field(default_factory=dict)  # stage -> segment -> pre-2025 skill flags
     recent: dict[str, dict] = field(default_factory=dict)            # stage -> p50 vs median on the latest blocks
+    shrink: dict[str, float] = field(default_factory=dict)           # stage -> w in p50' = w*p50 + (1-w)*median
+    params: dict = field(default_factory=dict)                       # LightGBM overrides the bundle was trained with
     protocol: str = ""
 
     def set_models(self, name: str | None) -> dict[str, StageModels]:

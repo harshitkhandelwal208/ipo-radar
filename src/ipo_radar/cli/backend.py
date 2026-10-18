@@ -12,7 +12,7 @@ import sqlite3
 import subprocess
 from collections.abc import Callable
 from contextlib import closing
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pandas as pd
@@ -21,6 +21,7 @@ from ipo_radar import config
 from ipo_radar.alerts import daemon, notify
 from ipo_radar.alerts.notify import Alert, Notifier
 from ipo_radar.cli.analysis import SourceStatus
+from ipo_radar.cli.model_rules import unused_stages
 from ipo_radar.errors import SourceError
 from ipo_radar.live import health as live_health
 from ipo_radar.live import merge
@@ -54,6 +55,7 @@ class Predictor:
     version: str | None
     trained_at: str | None = None   # ISO timestamp from the bundle
     n_rows: int | None = None       # IPOs the bundle was trained on
+    not_used: dict[str, str] = field(default_factory=dict)  # stage -> 'worse than the median' caveat reason
 
 
 def health_from(ipos: list[LiveIPO]) -> list[SourceStatus]:
@@ -110,7 +112,7 @@ def predictor() -> Predictor:
     n_rows = getattr(loaded, "n_rows", None)
     return Predictor(model_predict.predict, version if isinstance(version, str) else None,
                      trained_at if isinstance(trained_at, str) else None,
-                     n_rows if isinstance(n_rows, int) else None)
+                     n_rows if isinstance(n_rows, int) else None, unused_stages(loaded))
 
 
 def model_files() -> list[Path]:

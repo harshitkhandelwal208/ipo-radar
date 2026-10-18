@@ -149,6 +149,15 @@ def adjust_intervals(conf: dict[str, float], p10: np.ndarray, p50: np.ndarray, p
     return np.minimum(p10 - q, p50), np.maximum(p90 + q, p50)
 
 
+def shrink_quantiles(p10, p50, p90, w: float, anchor):
+    """Blend the p50 with the anchor (the segment's training median): p50' = w*p50 + (1-w)*anchor. The whole interval
+    moves by the same amount, so its width is unchanged. Works on floats and arrays. Shared by serving and the
+    walk-forward records, so the report and the CLI agree."""
+    new50 = w * p50 + (1.0 - w) * anchor
+    delta = new50 - p50
+    return p10 + delta, new50, p90 + delta
+
+
 def iso_from_oof(oof: pd.DataFrame) -> IsotonicRegression | None:
     if len(oof) < MIN_CAL_POINTS:
         return None
@@ -229,6 +238,17 @@ def _core_and_ranges(X: pd.DataFrame, markets: np.ndarray, stage: str) -> tuple[
     return core, ranges
 
 
+def _open_medians(open_rows: pd.DataFrame) -> dict[str, float]:
+    """Training median open gain per segment and overall: the anchor the shrinkage pulls the p50 toward."""
+    out = {"ALL": float(open_rows[F.TARGET_OPEN].median())}
+    segs = _segments(open_rows)
+    for seg in SEGMENTS:
+        vals = open_rows[F.TARGET_OPEN].to_numpy(float)[segs == seg]
+        if len(vals):
+            out[seg] = float(np.median(vals))
+    return out
+
+
 def fit_stage(rows: pd.DataFrame, stage: str, vocab: F.Vocab, spec: Design, seeds: Sequence[int], quick: bool,
               params: dict | None = None) -> StageModels | None:
     """All models for one stage. `rows` is asof_expand output restricted to that stage (and to the training set).
@@ -259,4 +279,5 @@ def fit_stage(rows: pd.DataFrame, stage: str, vocab: F.Vocab, spec: Design, seed
         core=core, ranges=ranges, conf=conf, conf_n=conf_n,
         gmp_linear=fit_gmp_linear(rows, stage, vocab),
         gmp_counts=gmp_counts(rows) if stage == "pre_listing" else {},
+        open_median=_open_medians(open_rows),
     )

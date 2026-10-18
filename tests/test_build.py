@@ -155,3 +155,22 @@ def test_exact_zero_listing_gain_and_gmp_are_blanked_and_counted_not_trained_as_
     assert by_id.loc[india.loc[2, "ipo_id"], "list_close_gain_pct"] == 4.5
     assert report.blanked["list_open_gain_pct exactly 0 (placeholder)"] >= 1
     assert report.blanked["gmp_last exactly 0 (placeholder)"] >= 1
+
+
+def test_exact_zero_subscription_multiples_are_blanked_including_day_columns():
+    frames = _frames()
+    india = frames["india"].copy()
+    india.loc[0, "sub_total"] = 0.0               # placeholder multiple
+    india.loc[1, "sub_qib_d1"] = 0.0              # day-wise placeholder
+    india.loc[2, "sub_retail"] = 0.0
+    india.loc[2, "sub_total_d2"] = 2.5            # a real non-zero day value must survive
+    frames["india"] = india
+    df, report = B.build_frame(frames)
+    by_id = df.set_index("ipo_id")
+    assert np.isnan(by_id.loc[india.loc[0, "ipo_id"], "sub_total"])
+    assert np.isnan(by_id.loc[india.loc[1, "ipo_id"], "sub_qib_d1"])
+    assert np.isnan(by_id.loc[india.loc[2, "ipo_id"], "sub_retail"])
+    assert by_id.loc[india.loc[2, "ipo_id"], "sub_total_d2"] == 2.5
+    assert report.blanked["sub_total exactly 0 (placeholder)"] >= 1
+    assert report.blanked["sub_qib_d1 exactly 0 (placeholder)"] >= 1
+    assert report.blanked["sub_retail exactly 0 (placeholder)"] >= 1

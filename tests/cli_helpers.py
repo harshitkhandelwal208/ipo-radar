@@ -89,6 +89,25 @@ def fake_predict(ipo: LiveIPO) -> Prediction:
     )
 
 
+def fake_predict_stage(ipo: LiveIPO, stage: str = "pre_open") -> Prediction:
+    p = fake_predict(ipo)
+    p.as_of = stage
+    return p
+
+
+def no_model_predict(ipo: LiveIPO) -> Prediction:
+    """What predict() returns where the release weight is 0: the P50 is the segment's training median, the interval
+    is shifted to it (width kept), and the NO_MODEL caveat plus the model's own range say so."""
+    from ipo_radar.cli.model_rules import NO_MODEL_CAVEAT
+
+    p = fake_predict(ipo)
+    p.open_gain_pct_p10, p.open_gain_pct_p50, p.open_gain_pct_p90 = 28.5, 32.5, 36.5
+    p.reliable = False
+    p.caveats = [NO_MODEL_CAVEAT, "model's own range, not used at this stage: p10 -4, p50 12, p90 38 pp",
+                 "few SME examples in training"]
+    return p
+
+
 def no_skill_predict(ipo: LiveIPO) -> Prediction:
     """A prediction that does not beat the historical median here: P50 gets the '~' marker."""
     p = fake_predict(ipo)
@@ -105,6 +124,7 @@ def history_frame() -> pd.DataFrame:
         rows.append({c: None for c in ALL_COLS} | {
             "ipo_id": f"past{i}", "market": "IN_MAIN", "company": f"Past Main {i}", "symbol": f"PM{i}",
             "open_date": pd.Timestamp(date(2025, 1, 1) + timedelta(days=30 * i)),
+            "listing_date": pd.Timestamp(date(2025, 1, 8) + timedelta(days=30 * i)),
             "gmp_pct_last": float(gmp_last), "list_open_gain_pct": float(gain), "sub_total": sub,
             "sub_qib": sub, "sub_nii": sub, "sub_retail": sub, "issue_size_m": 5000.0,
         })
@@ -112,6 +132,7 @@ def history_frame() -> pd.DataFrame:
         rows.append({c: None for c in ALL_COLS} | {
             "ipo_id": f"sme{i}", "market": "IN_SME", "company": f"Past SME {i}", "symbol": f"SM{i}",
             "open_date": pd.Timestamp(date(2025, 6, 1) + timedelta(days=i)),
+            "listing_date": pd.Timestamp(date(2025, 6, 8) + timedelta(days=i)),
             "gmp_pct_last": 20.0, "list_open_gain_pct": gain, "sub_total": 4.0, "sub_qib": 1.0,
         })
     return pd.DataFrame(rows)

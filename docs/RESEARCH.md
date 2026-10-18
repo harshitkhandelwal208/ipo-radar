@@ -1,6 +1,6 @@
 # Research: what goes with listing-day gains and losses
 
-Source: `data/processed/ipos.parquet`, 4933 IPOs (IN_MAIN 1029, IN_SME 1758, US 1721, HK 323, OTHER 102). The numbers were computed on the post-build table (`data/processed/COVERAGE.md`, built 2026-10-18). Table digest `1e4485a4`, seed 7. Written by `ipo research` (`src/ipo_radar/research.py`); a rerun on the same table gives the same file (checked: two runs compared byte for byte).
+Source: `data/processed/ipos.parquet`, 4933 IPOs (IN_MAIN 1029, IN_SME 1758, US 1721, HK 323, OTHER 102). The numbers were computed on the post-build table (`data/processed/COVERAGE.md`, built 2026-10-18). Table digest `14663db9`, seed 7. Written by `ipo research` (`src/ipo_radar/research.py`); a rerun on the same table gives the same file (checked: two runs compared byte for byte).
 
 ## Summary
 
@@ -13,7 +13,7 @@ Source: `data/processed/ipos.parquet`, 4933 IPOs (IN_MAIN 1029, IN_SME 1758, US 
 - GMP against subscription (India pooled, open, n 274): R2 0.68 from GMP, 0.40 from total, 0.68 from both. Adding GMP to total adds +0.28 [+0.21, +0.37]; adding total to GMP adds +0.00 [+0.00, +0.01].
 - Market conditions (close): NIFTY 20-day return rho +0.09 [+0.02, +0.16] in IN_MAIN (weak) and +0.08 [-0.00, +0.16] in IN_SME (not distinguishable from noise); India VIX rho -0.05 [-0.12, +0.03] in IN_MAIN (not distinguishable from noise) and -0.06 [-0.14, +0.02] in IN_SME (not distinguishable from noise). US, HK and OTHER have no as-of context in the table.
 - Issue size (close): rho +0.04 [-0.04, +0.13] in IN_MAIN (not distinguishable from noise), +0.22 [+0.18, +0.27] in IN_SME (weak), +0.24 [+0.18, +0.29] in US (weak).
-- Cross-market: HK public-offer multiple rho +0.20 [+0.10, +0.31] (n 293, weak), the same sign as India retail. The US has no subscription field. Biggest caveats: survivorship (joined rows 159 US, 323 HK), placeholders blanked by the build (open 389, close 128, GMP 50) and 33 subscription zeros set to missing here, SME category data mostly pre-2024, GMP untimed and ending 2024, and 94 intervals with no multiplicity correction.
+- Cross-market: HK public-offer multiple rho +0.20 [+0.10, +0.31] (n 293, weak), the same sign as India retail. The US has no subscription field. Biggest caveats: survivorship (joined rows 159 US, 323 HK), placeholders blanked by the build (open 389, close 128, GMP 50) and 0 subscription zeros set to missing here, SME category data mostly pre-2024, GMP untimed and ending 2024, and 94 intervals with no multiplicity correction.
 
 ## Question and method
 
@@ -131,12 +131,7 @@ Category coverage by listing year, IN_SME (share of that year's rows):
 - Schema columns missing from this table: none. A missing column is read as all-NaN, so the sections that need it print 'n<20' or 'no rows'.
 - Exact-zero placeholders. The build blanks a 0 in the gain and GMP columns (rule `<col> exactly 0 (placeholder)` in data/build.py). Blanked by the build (data/processed/COVERAGE.md, built 2026-10-18): open 389, high 45, low 75, close 128, gmp_last 50, gmp_pct_last 50. The spike evidence was taken on the pre-build table (US open gains: 138 at 0.00%, against 34 in (0, 1] and 10 in [-1, 0)). Subscription zeros are not in that rule, so this module sets them to missing. Counted from this run's input, by market:
 
-| field | IN_MAIN | IN_SME | US | HK | OTHER | total |
-|---|---|---|---|---|---|---|
-| sub_qib | 15 | 0 | 0 | 0 | 0 | 15 |
-| sub_nii | 1 | 0 | 0 | 0 | 0 | 1 |
-| sub_retail | 15 | 0 | 0 | 0 | 0 | 15 |
-| sub_employee | 2 | 0 | 0 | 0 | 0 | 2 |
+None were found.
 
 - Survivorship: 159 of 1721 US rows and 323 of 323 HK rows are joined price-file IPOs, a selected subset. Every estimate describes IPOs that listed, so it is optimistic for the average issue.
 - SME category subscription: QIB is present for 29% of 2023 SME listings and 0% of 2024-2026 listings. SME category results rest on the pre-2024 listings, mostly 2023.

@@ -58,6 +58,7 @@ def build_view(*, refresh: bool, predict: bool = True) -> View:
     errors: list[str] = []
     model_message: str | None = None
     version: str | None = None
+    unused: dict[str, str] = {}
     if not predict:
         model_message = "predictions skipped (--no-predict)"
     else:
@@ -67,8 +68,10 @@ def build_view(*, refresh: bool, predict: bool = True) -> View:
             model_message = str(exc)
         else:
             version = predictor.version
+            unused = predictor.not_used
             preds, errors = predict_all(predictor.predict, live.ipos)
-    analyses = [build_analysis(ipo, preds.get(ipo.ipo_id), now=now, history=history) for ipo in live.ipos]
+    analyses = [build_analysis(ipo, preds.get(ipo.ipo_id), now=now, history=history, unused=unused)
+                for ipo in live.ipos]
     analyses.sort(key=lambda a: (STATUS_ORDER.get(a.status, 9), a.company))
     return View(
         now=now, live=live, analyses=analyses, preds=preds, model_message=model_message,
